@@ -159,3 +159,4 @@ vmap <silent> ,s :VimShellSendString<CR>
 nnoremap <silent> ,s <S-v>:VimShellSendString<CR>
 set isfname=\ ,@,48-57,\\,/,.,-,_,+,,,#,$,%,{,},[,],@-@,!,~,=
 nmap <C-n> <Plug>(operator-jump-tail-out)if
+nmap <C-p> <Plug>(operator-jump-head-out)if
