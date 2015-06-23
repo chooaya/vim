@@ -97,8 +97,10 @@ endif
 "---------------------------------------------------------------------------以下は共通設定
 filetype plugin on
 runtime $VIMRUNTIME/macros/matchit.vim
-set mouse=a
-set ttymouse=xterm2
+if has('mouse')
+  set mouse=a
+  set ttymouse=xterm2
+endif
 let $LANG='ja_JP.UTF-8'
 "language messages ja_jp.UTF-8
 set encoding=utf-8
