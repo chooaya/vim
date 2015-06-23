@@ -1,4 +1,3 @@
-
 set nocompatible
 let s:MSWindows = has('win95') + has('win16') + has('win32') + has('win64')
 
@@ -96,6 +95,10 @@ if &t_Co > 2 || has("gui_running")
 endif
 
 "---------------------------------------------------------------------------以下は共通設定
+filetype plugin on
+runtime $VIMRUNTIME/macros/matchit.vim
+set mouse=a
+set ttymouse=xterm2
 let $LANG='ja_JP.UTF-8'
 "language messages ja_jp.UTF-8
 set encoding=utf-8
@@ -220,3 +223,4 @@ nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR
 vmap <silent> ,s :VimShellSendString<CR>
 " 選択中に,s: 非同期で開いたインタプリタに選択行を評価させる
 nnoremap <silent> ,s <S-v>:VimShellSendString<CR>
+set isfname=\ ,@,48-57,\\,/,.,-,_,+,,,#,$,%,{,},[,],@-@,!,~,=

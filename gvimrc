@@ -32,6 +32,8 @@ if has('printer')
 endif
 colorscheme evening " (GUI使用時)
 "---------------------------------------------------------------------------以下は共通設定
+filetype plugin on
+runtime $VIMRUNTIME/macros/matchit.vim
 let $LANG='ja_JP.UTF-8'
 language messages ja_jp.UTF-8
 set encoding=utf-8
@@ -104,7 +106,7 @@ if executable('ag')
   let g:unite_source_grep_command = 'ag'
   let g:unite_source_grep_default_opts = '--nogroup --nocolor --line-numbers'
   let g:unite_source_grep_recursive_opt = ''
-  set grepprg=ag\ --nogroup\ --nocolor\ --line-numbers\
+"  set grepprg=ag\ --nogroup\ --nocolor\ --line-numbers\
   set grepformat=%f:%l:%m
 else
   let g:unite_source_grep_command = 'ack'
@@ -155,3 +157,4 @@ nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR
 vmap <silent> ,s :VimShellSendString<CR>
 " 選択中に,s: 非同期で開いたインタプリタに選択行を評価させる
 nnoremap <silent> ,s <S-v>:VimShellSendString<CR>
+set isfname=\ ,@,48-57,\\,/,.,-,_,+,,,#,$,%,{,},[,],@-@,!,~,=
