@@ -1,0 +1,1 @@
+./configure --prefix=$HOME --enable-pythoninterp --with-python-config-dir=/usr/lib64/python2.7/config --enable-rubyinterp=dynamic  --enable-cscope --enable-gui=auto --enable-gtk2-check  --enable-gnome-check  --with-features=huge --with-x
