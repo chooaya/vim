@@ -97,7 +97,7 @@ endif
 "---------------------------------------------------------------------------以下は共通設定
 filetype off
 if has('vim_starting')
-  set runtimepath+=$VIMRUNTIME/bundle/neobundle.vim
+  set rtp+=$VIMRUNTIME/bundle/neobundle.vim/
   call neobundle#begin(expand("$VIMRUNTIME/bundle/"))
   NeoBundleFetch 'joonty/vdebug'
   call neobundle#end()
