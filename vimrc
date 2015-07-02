@@ -209,9 +209,6 @@ endfunction
 nmap ,cs :let @*=expand("%")<CR>
 nmap ,cl :let @*=expand("%:p")<CR>
 
-nnoremap <F10> :VimFiler
-nnoremap <F11> :UniteBookmarkAdd
-nnoremap <F12> :Unite bookmark
 
 
 function! UniteFileCurrentDir()
