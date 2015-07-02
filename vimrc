@@ -95,6 +95,16 @@ if &t_Co > 2 || has("gui_running")
 endif
 
 "---------------------------------------------------------------------------以下は共通設定
+filetype off
+if has('vim_starting')
+  set runtimepath+=$VIMRUNTIME/bundle/neobundle.vim
+  call neobundle#begin(expand("$VIMRUNTIME/bundle/"))
+  NeoBundleFetch 'joonty/vdebug'
+  call neobundle#end()
+endif
+
+filetype plugin indent on     " required!
+filetype indent on
 filetype plugin on
 runtime $VIMRUNTIME/macros/matchit.vim
 if has('mouse')
