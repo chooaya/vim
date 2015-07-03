@@ -99,6 +99,7 @@ filetype off
 if has('vim_starting')
   set rtp+=$VIMRUNTIME/bundle/neobundle.vim/
   call neobundle#begin(expand("$VIMRUNTIME/bundle/"))
+  NeoBundleFetch 'Shougo/neobundle.vim'
   NeoBundleFetch 'joonty/vdebug'
   call neobundle#end()
 endif
