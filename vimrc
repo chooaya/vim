@@ -167,6 +167,7 @@ let g:unite_enable_start_insert=1
 let g:unite_enable_ignore_case = 1
 let g:unite_enable_smart_case = 1
 " grep検索
+let g:unite_source_grep_max_candidates = 10000
 nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
 nnoremap <silent> ,t  :let g:unite_source_grep_default_opts = '--nogroup --nocolor  --line-numbers -G \.tpl$'<CR>
 nnoremap <silent> ,p  :let g:unite_source_grep_default_opts = '--nogroup --nocolor  --line-numbers -G \.php$'<CR>
@@ -236,3 +237,7 @@ nnoremap <silent> ,s <S-v>:VimShellSendString<CR>
 set isfname=\ ,@,48-57,\\,/,.,-,_,+,,,#,$,%,{,},[,],@-@,!,~,=
 nmap <C-n> <Plug>(operator-jump-tail-out)if
 nmap <C-p> <Plug>(operator-jump-head-out)if
+augroup vimrc-checktime
+	autocmd!
+	autocmd WinEnter * checktime
+augroup END
