@@ -192,8 +192,6 @@ else
   set grepformat=%f:%l:%m
 endif
 
-nnoremap <silent> <Leader>N :CD<CR>:NERDTree<CR>
-let NERDTreeShowHidden=1
 
 command! -nargs=? -complete=dir -bang CD  call s:ChangeCurrentDir('<args>', '<bang>')
 function! s:ChangeCurrentDir(directory, bang)
@@ -224,6 +222,10 @@ autocmd FileType vimfiler
       \ nnoremap <buffer><silent>/
       \ :call UniteFileCurrentDir() <CR>
       
+nnoremap <silent> <Leader>N :CD<CR>:VimFiler -buffer-name=explorer -split -simple -no-quit<CR>
+nnoremap <silent> <Leader>n :CD<CR>:VimFiler -buffer-name=explorer -split -horizontal -no-quit<CR>
+let g:vimfiler_as_default_explorer = 1
+
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
 
