@@ -209,14 +209,15 @@ endfunction
 nmap ,cs :let @*=expand("%")<CR>
 nmap ,cl :let @*=expand("%:p")<CR>
 
+let g:unite_source_find_command="find"
 autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>Unite file -default-action=vimfiler<CR>
       
-nnoremap <silent> <Leader>N :CD<CR>:VimFiler -buffer-name=explorer -explorer -find -split -no-quit<CR>
-nnoremap <silent> <Leader>n :CD<CR>:VimFiler -buffer-name=explorer -explorer -find -split -horizontal -no-quit<CR>
+nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
+nnoremap <silent> <Leader>N :CD<CR>:VimFiler -split -no-quit<CR>
+nnoremap <silent> <Leader>n :CD<CR>:VimFiler -split -horizontal -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
-let g:unite_source_find_command="find"
 
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
