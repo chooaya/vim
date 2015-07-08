@@ -211,13 +211,23 @@ nmap ,cl :let @*=expand("%:p")<CR>
 
 let g:unite_source_find_command="find"
 autocmd FileType vimfiler 
+        \ nnoremap <buffer><silent>B 
+        \ :<C-u>Unite bookmark -default-action=vimfiler<CR>
+
+autocmd FileType vimfiler 
+        \ nnoremap <buffer><silent>f 
+        \ :<C-u>Unite find:. -default-action=vimfiler<CR>
+
+autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>Unite file -default-action=vimfiler<CR>
-      
+
+call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
 nnoremap <silent> <Leader>N :CD<CR>:VimFiler -split -no-quit<CR>
 nnoremap <silent> <Leader>n :CD<CR>:VimFiler -split -horizontal -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
+call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
