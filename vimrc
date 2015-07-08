@@ -209,18 +209,9 @@ endfunction
 nmap ,cs :let @*=expand("%")<CR>
 nmap ,cl :let @*=expand("%:p")<CR>
 
-
-
-function! UniteFileCurrentDir()
-  let s  = ':Unite file -start-insert -path='
-  let s .= vimfiler#get_current_vimfiler().current_dir
-
-  execute s
-endfunction
-
-autocmd FileType vimfiler
-      \ nnoremap <buffer><silent>/
-      \ :call UniteFileCurrentDir() <CR>
+autocmd FileType vimfiler 
+        \ nnoremap <buffer><silent>/ 
+        \ :<C-u>Unite file -default-action=vimfiler<CR>
       
 nnoremap <silent> <Leader>N :CD<CR>:VimFiler -buffer-name=explorer -split -simple -no-quit<CR>
 nnoremap <silent> <Leader>n :CD<CR>:VimFiler -buffer-name=explorer -split -horizontal -no-quit<CR>
