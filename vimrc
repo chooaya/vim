@@ -246,6 +246,7 @@ augroup vimrc-checktime
 	autocmd WinEnter * checktime
 augroup END
 
+let g:vimfiler_enable_auto_cd = 1
 nnoremap <Leader><Leader><Leader> :<C-u>Unite 
 nnoremap <Leader><Leader>l :<C-u>Unite line<CR> 
 nnoremap <Leader><Leader>o :<C-u>Unite outline<CR> 
