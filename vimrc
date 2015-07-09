@@ -252,7 +252,8 @@ nnoremap <Leader><Leader>f :<C-u>Unite file_rec/async<CR>
 nnoremap <Leader><Leader>b :<C-u>Unite buffer_tab<CR> 
 nnoremap <Leader><Leader>B :<C-u>Unite bookmark<CR> 
 nnoremap <Leader><Leader>m :<C-u>Unite file_mru<CR> 
-nnoremap <Leader><Leader>c :VimShellInteractive  --split='split \| resize 55' phpsh /tmp/cho/test.php<CR> 
+nnoremap <Leader><Leader>c :execute ":VimShellInteractive  --split='split \| resize 55' phpsh ".$MYTESTFILE<CR> 
+nnoremap <Leader><Leader>M :execute ":VimShellInteractive  --split='split \| resize 55' ".$MYSQL<CR> 
 " ,ih: bashを非同期で起動
 nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR>
 nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
