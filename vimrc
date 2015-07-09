@@ -123,8 +123,8 @@ set ignorecase
 set nobackup
 " ファイルの上書きの前にバックアップを作る。オプション 'backup' がオンでない限り、バックアップは上書きに成功した後削除される。（有効:writebackup/無効:nowritebackup）
 set nowritebackup
-set noswapfile
-"set swapfile
+" set noswapfile
+set swapfile
 ".vimrcの再適用  :bufdo source $MYVIMRC
 noremap <Up> <Nop>
 noremap <Down> <Nop>
