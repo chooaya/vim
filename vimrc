@@ -245,3 +245,14 @@ augroup vimrc-checktime
 	autocmd!
 	autocmd WinEnter * checktime
 augroup END
+
+nnoremap <Leader><Leader><Leader> :<C-u>Unite 
+nnoremap <Leader><Leader>l :<C-u>Unite line<CR> 
+nnoremap <Leader><Leader>o :<C-u>Unite outline<CR> 
+nnoremap <Leader><Leader>f :<C-u>Unite file_rec/async<CR> 
+nnoremap <Leader><Leader>b :<C-u>Unite buffer_tab<CR> 
+nnoremap <Leader><Leader>B :<C-u>Unite bookmark<CR> 
+nnoremap <Leader><Leader>m :<C-u>Unite file_mru<CR> 
+nnoremap <Leader><Leader>h :<C-u>Unite help<CR> 
+nnoremap <Leader><Leader>v :<C-u>Unite help<CR> 
+nnoremap <Leader><Leader>c :<C-u>Unite command<CR> 
