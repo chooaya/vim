@@ -180,18 +180,20 @@ nnoremap <silent> ,dg  :<C-u>Unite grep -buffer-name=search-buffer<CR>
 nnoremap <silent> ,cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W><CR>
 " grep検索結果の再呼出
 nnoremap <silent> ,r  :<C-u>UniteResume search-buffer<CR>
+nnoremap <silent> ,R  :<C-u>UniteResume<CR>
 " unite grep に ag(The Silver Searcher) を使う
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--nogroup --nocolor --line-numbers'
+  let g:unite_source_grep_default_opts = '--ignore-case --nogroup --nocolor --line-numbers'
   let g:unite_source_grep_recursive_opt = ''
-  set grepprg=ag\ --nogroup\ --nocolor\ --line-numbers\
+  set grepprg=ag\ --ignore-case\ --nogroup\ --nocolor\ --line-numbers\
   set grepformat=%f:%l:%m
 else
   let g:unite_source_grep_command = 'ack'
   set grepformat=%f:%l:%m
 endif
 
+let @a="ag  --nogroup --nocolor --files-with-matches 'SEARCHTERM1' '/tmp/path'| ag --nogroup --nocolor  '/.*SEARCHTERM2[^/]*$' "
 
 command! -nargs=? -complete=dir -bang CD  call s:ChangeCurrentDir('<args>', '<bang>')
 function! s:ChangeCurrentDir(directory, bang)
@@ -215,19 +217,16 @@ autocmd FileType vimfiler
         \ :<C-u>Unite bookmark -default-action=vimfiler<CR>
 
 autocmd FileType vimfiler 
-        \ nnoremap <buffer><silent>f 
-        \ :<C-u>Unite find:. -default-action=vimfiler<CR>
-
-autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>Unite file -default-action=vimfiler<CR>
 
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
-nnoremap <silent> <Leader>N :CD<CR>:VimFilerBufferDir -split -no-quit<CR>
-nnoremap <silent> <Leader>n :CD<CR>:VimFilerBufferDir -split -horizontal -no-quit<CR>
+nnoremap <silent> <Leader>N :VimFilerBufferDir -split -no-quit<CR>
+nnoremap <silent> <Leader>n :VimFilerBufferDir -split -horizontal -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
+" gr -> grep  , gf -> find , <C-v> -> vim buffer mode , <ESC> -> vimfiler mode
 
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
