@@ -231,8 +231,6 @@ call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
 
-" ,ih: bashを非同期で起動
-nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR>
 
 " ,s: 非同期で開いたインタプリタに現在の行を評価させる
 vmap <silent> ,s :VimShellSendString<CR>
@@ -254,6 +252,7 @@ nnoremap <Leader><Leader>f :<C-u>Unite file_rec/async<CR>
 nnoremap <Leader><Leader>b :<C-u>Unite buffer_tab<CR> 
 nnoremap <Leader><Leader>B :<C-u>Unite bookmark<CR> 
 nnoremap <Leader><Leader>m :<C-u>Unite file_mru<CR> 
-nnoremap <Leader><Leader>h :<C-u>Unite help<CR> 
-nnoremap <Leader><Leader>v :<C-u>Unite help<CR> 
 nnoremap <Leader><Leader>c :<C-u>Unite command<CR> 
+" ,ih: bashを非同期で起動
+nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR>
+nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
