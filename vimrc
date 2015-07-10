@@ -193,7 +193,7 @@ else
   set grepformat=%f:%l:%m
 endif
 
-let @a="ag  --nogroup --nocolor --files-with-matches 'SEARCHTERM1' '/tmp/path'| ag --nogroup --nocolor  '/.*SEARCHTERM2[^/]*$' "
+let @a="ag --ignore-case --nogroup --nocolor --line-numbers  --files-with-matches 'SEARCHTERM1'|xargs ag --ignore-case --nogroup --nocolor --line-numbers --vimgrep 'SEARCHTERM2'"
 
 command! -nargs=? -complete=dir -bang CD  call s:ChangeCurrentDir('<args>', '<bang>')
 function! s:ChangeCurrentDir(directory, bang)
