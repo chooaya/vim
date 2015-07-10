@@ -195,7 +195,8 @@ endif
 
 let @a='find ./  -print | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @b=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
-let @c="ag --ignore-case --nogroup --nocolor --line-numbers  --files-with-matches 'SEARCHTERM1'|xargs ag --ignore-case --nogroup --nocolor --line-numbers --vimgrep 'SEARCHTERM2'"
+let @c=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i -l "SEARCHTERM2"'
+let @d="ag --ignore-case --nogroup --nocolor --line-numbers  --files-with-matches 'SEARCHTERM1'|xargs ag --ignore-case --nogroup --nocolor --line-numbers --vimgrep 'SEARCHTERM2'"
 
 command! -nargs=? -complete=dir -bang CD  call s:ChangeCurrentDir('<args>', '<bang>')
 function! s:ChangeCurrentDir(directory, bang)
@@ -259,3 +260,5 @@ nnoremap <Leader><Leader>M :execute ":VimShellInteractive  --split='split \| res
 " ,ih: bashを非同期で起動
 nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR>
 nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
+nnoremap <CR> gF
+nnoremap <C-w><CR> <C-w>gF
