@@ -149,7 +149,8 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 let g:ref_phpmanual_path = $VIMRUNTIME . '/dict/php-chunked-xhtml'
 let g:neocomplete_php_locale = 'ja'
-let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_enable_signs = 1
 let g:syntastic_echo_current_error = 1
 let g:syntastic_auto_loc_list = 2
