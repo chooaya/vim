@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.4.  Last change: 2015 Mar 05
+*eval.txt*	For Vim version 7.4.  Last change: 2015 Jun 26
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -525,7 +525,7 @@ Funcref to a Dictionary, but the "self" variable is not available then.
 To avoid the extra name for the function it can be defined and directly
 assigned to a Dictionary in this way: >
 	:let mydict = {'data': [0, 1, 2, 3]}
-	:function mydict.len() dict
+	:function mydict.len()
 	:   return len(self.data)
 	:endfunction
 	:echo mydict.len()
@@ -1005,7 +1005,7 @@ function.  Example: >
 
 
 
-string						*string* *expr-string* *E114*
+string					*string* *String* *expr-string* *E114*
 ------
 "string"		string constant		*expr-quote*
 
@@ -1021,7 +1021,7 @@ A string constant accepts these special characters:
 \X.	same as \x.
 \u....	character specified with up to 4 hex numbers, stored according to the
 	current value of 'encoding' (e.g., "\u02a4")
-\U....	same as \u....
+\U....	same as \u but allows up to 8 hex numbers.
 \b	backspace <BS>
 \e	escape <Esc>
 \f	formfeed <FF>
@@ -1836,6 +1836,7 @@ getwinvar( {nr}, {varname} [, {def}])
 				any	variable {varname} in window {nr}
 glob( {expr} [, {nosuf} [, {list} [, {alllinks}]]])
 				any	expand file wildcards in {expr}
+glob2regpat( {expr})		String  convert a glob pat into a search pat
 globpath( {path}, {expr} [, {nosuf} [, {list} [, {alllinks}]]])
 				String	do glob({expr}) for all dirs in {path}
 has( {feature})			Number	TRUE if feature {feature} supported
@@ -1984,7 +1985,7 @@ split( {expr} [, {pat} [, {keepempty}]])
 sqrt( {expr})			Float	square root of {expr}
 str2float( {expr})		Float	convert String to Float
 str2nr( {expr} [, {base}])	Number	convert String to Number
-strchars( {expr})		Number	character length of the String {expr}
+strchars( {expr} [, {skipcc}])	Number	character length of the String {expr}
 strdisplaywidth( {expr} [, {col}]) Number display length of the String {expr}
 strftime( {format}[, {time}])	String	time in specified format
 stridx( {haystack}, {needle}[, {start}])
@@ -2960,6 +2961,8 @@ extend({expr1}, {expr2} [, {expr3}])			*extend()*
 		{expr1} is changed when {expr2} is not empty.  If necessary
 		make a copy of {expr1} first.
 		{expr2} remains unchanged.
+		When {expr1} is locked and {expr2} is not empty the operation
+		fails.
 		Returns {expr1}.
 
 
@@ -3671,6 +3674,14 @@ glob({expr} [, {nosuf} [, {list} [, {alllinks}]]])		*glob()*
 		See |expand()| for expanding special Vim variables.  See
 		|system()| for getting the raw output of an external command.
 
+glob2regpat({expr})					 *glob2regpat()*
+		Convert a file pattern, as used by glob(), into a search
+		pattern.  The result can be used to match with a string that
+		is a file name.  E.g. >
+			if filename =~ glob2regpat('Make*.mak')
+<		This is equivalent to: >
+			if filename =~ '^Make.*\.mak$'
+<
 								*globpath()*
 globpath({path}, {expr} [, {nosuf} [, {list} [, {allinks}]]])
 		Perform glob() on all directories in {path} and concatenate
@@ -5828,15 +5839,17 @@ str2nr( {expr} [, {base}])				*str2nr()*
 		Text after the number is silently ignored.
 
 
-strchars({expr})					*strchars()*
+strchars({expr} [, {skipcc}])					*strchars()*
 		The result is a Number, which is the number of characters
-		String {expr} occupies.  Composing characters are counted
-		separately.
+		in String {expr}.
+		When {skipcc} is omitted or zero, composing characters are
+		counted separately.
+		When {skipcc} set to 1, Composing characters are ignored.
 		Also see |strlen()|, |strdisplaywidth()| and |strwidth()|.
 
 strdisplaywidth({expr}[, {col}])			*strdisplaywidth()*
 		The result is a Number, which is the number of display cells
-		String {expr} occupies on the screen when it starts a {col}.
+		String {expr} occupies on the screen when it starts at {col}.
 		When {col} is omitted zero is used.  Otherwise it is the
 		screen column where to start.  This matters for Tab
 		characters.
@@ -5902,15 +5915,11 @@ string({expr})	Return {expr} converted to a String.  If {expr} is a Number,
 							*strlen()*
 strlen({expr})	The result is a Number, which is the length of the String
 		{expr} in bytes.
-		If you want to count the number of multi-byte characters (not
-		counting composing characters) use something like this: >
-
-			:let len = strlen(substitute(str, ".", "x", "g"))
-<
 		If the argument is a Number it is first converted to a String.
 		For other types an error is given.
-		Also see |len()|, |strchars()|, |strdisplaywidth()| and
-		|strwidth()|.
+		If you want to count the number of multi-byte characters use
+		|strchars()|.
+		Also see |len()|, |strdisplaywidth()| and |strwidth()|.
 
 strpart({src}, {start}[, {len}])			*strpart()*
 		The result is a String, which is part of {src}, starting from

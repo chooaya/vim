@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2015 Jan 14
+" Last Change:	2015 Jun 06
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -499,7 +499,7 @@ au BufNewFile,BufRead *.prg
 	\ endif
 
 " Clojure
-au BufNewFile,BufRead *.clj,*.cljs		setf clojure
+au BufNewFile,BufRead *.clj,*.cljs,*.cljx,*.cljc		setf clojure
 
 " Cmake
 au BufNewFile,BufRead CMakeLists.txt,*.cmake,*.cmake.in		setf cmake
@@ -776,10 +776,9 @@ au BufNewFile,BufRead *.mo,*.gdmo		setf gdmo
 au BufNewFile,BufRead *.ged,lltxxxxx.txt	setf gedcom
 
 " Git
-au BufNewFile,BufRead *.git/COMMIT_EDITMSG	setf gitcommit
-au BufNewFile,BufRead *.git/MERGE_MSG		setf gitcommit
+au BufNewFile,BufRead COMMIT_EDITMSG		setf gitcommit
+au BufNewFile,BufRead MERGE_MSG			setf gitcommit
 au BufNewFile,BufRead *.git/config,.gitconfig,.gitmodules setf gitconfig
-au BufNewFile,BufRead *.git/modules/*/COMMIT_EDITMSG setf gitcommit
 au BufNewFile,BufRead *.git/modules/*/config	setf gitconfig
 au BufNewFile,BufRead */.config/git/config	setf gitconfig
 if !empty($XDG_CONFIG_HOME)
@@ -1267,8 +1266,8 @@ au BufNewFile,BufRead */etc/modules.conf,*/etc/modules,*/etc/conf.modules setf m
 " Mplayer config
 au BufNewFile,BufRead mplayer.conf,*/.mplayer/config	setf mplayerconf
 
-" Moterola S record
-au BufNewFile,BufRead *.s19,*.s28,*.s37		setf srec
+" Motorola S record
+au BufNewFile,BufRead *.s19,*.s28,*.s37,*.mot,*.srec	setf srec
 
 " Mrxvtrc
 au BufNewFile,BufRead mrxvtrc,.mrxvtrc		setf mrxvtrc
@@ -1295,7 +1294,7 @@ au BufNewFile,BufRead *.mush			setf mush
 au BufNewFile,BufRead Mutt{ng,}rc		setf muttrc
 
 " Nano
-au BufNewFile,BufRead */etc/nanorc,.nanorc	setf nanorc
+au BufNewFile,BufRead */etc/nanorc,*.nanorc  	setf nanorc
 
 " Nastran input/DMAP
 "au BufNewFile,BufRead *.dat			setf nastran

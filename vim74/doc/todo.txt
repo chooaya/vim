@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.4.  Last change: 2015 Mar 05
+*todo.txt*      For Vim version 7.4.  Last change: 2015 Jun 25
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -58,6 +58,8 @@ Regexp problems:
 - Using back reference before the capturing group sometimes works with the old
   engine, can we do this with the new engine?  E.g. with
   "/\%(<\1>\)\@<=.*\%(<\/\(\w\+\)>\)\@=" matching text inside HTML tags.
+  This problem is probably the same: "\%(^\1.*$\n\)\@<=\(\d\+\).*$".
+  (guotuofeng, 2015 Jun 22)
 - Strange matching with "\(Hello\n\)\@<=A". (Anas Syed, 2015 Feb 12)
 - Problem with \v(A)@<=b+\1c. (Issue 334)
 - Diff highlighting can be very slow. (Issue 309)
@@ -68,36 +70,44 @@ Regexp problems:
 - this doesn't work: "syntax match ErrorMsg /.\%9l\%>20c\&\%<28c/".  Leaving
   out the \& works.  Seems any column check after \& fails.
 
-Check out neovim bug reports that apply to Vim:
-https://github.com/neovim/neovim/issues?q=label%3Abug-vim
-Specifically:
-https://github.com/neovim/neovim/commit/cf8e175cf54281bcad5e704308e92ebb3e6381d3
-https://github.com/neovim/neovim/commit/d7038127ca6b356ad33fdec08aa3b23ac6a817af
-https://github.com/neovim/neovim/commit/77ace65bdce379f2d9b13ee81ab3fc01951f92dc
-
 Still using freed memory after using setloclist(). (lcd, 2014 Jul 23)
 More info Jul 24.  Not clear why.
 
 Better .ico file for Windows. (Pat Suwalski, 2015 Feb 13)
 Waiting for response on remark from Edward Fox.
 
-Patch to make getregtype() return the right size for non-linux systems.
-(Yasuhiro Matsumoto, 2014 Jul 8)
-Breaks test_eval.  Inefficient, can we only compute y_width when needed?
-
 Problem that a previous silent ":throw" causes a following try/catch not to
 work. (ZyX, 2013 Sep 28)
 
 Problem using ":try" inside ":execute". (ZyX, 2013 Sep 15)
 
+Regression for v_b_A. (Ingo Karkat, 2015 May 18)
+
 ":cd C:\Windows\System32\drivers\etc*" does not work, even though the
 directory exists. (Sergio Gallelli, 2013 Dec 29)
 
-C indent: should recognize C11 raw strings. (Mark Lodato, 2015 Mar 1)
+Invalid memory access in regexp.c. (Dominique Pelle, 2015 May 23)
 
-Intel Hex syntax file update, Markus Heidelberg 2015 Mar 2
+Using ":windo" to set options in all windows has the side effect that it
+changes the window layout and the current window.  Make a variant that saves
+and restores.  Use in the matchparen plugin.
+Perhaps we can use ":silent window"?
+
+C indent: should recognize C11 raw strings. (Mark Lodato, 2015 Mar 1)
+Need to recognize R"string" for 'cindent'.
+
+Updated phpcomplete. (Mikolaj Machowski, 2015 May 6)
+
+Patch to make ":difoff" not reset the saved values, so that it can be used
+twice. (Olaf Dabrunz, 2015 Jun 21)
+
+Crash when changing the 'tags' option from a remote command.
+(Benjamin Fritz, 2015 Mar 18, stack trace Mar 20)
 
 Gvim: when both Tab and CTRL-I are mapped, use CTRL-I not for Tab.
+
+Can src/GvimExt/Make_cyg.mak be removed?
+Same for src/xxd/Make_cyg.mak
 
 Python: ":py raw_input('prompt')" doesn't work. (Manu Hack)
 
@@ -107,13 +117,36 @@ wrong name. (Aram, 2014 Nov 7)  Vim 7.4.
 Can't recognize the $ProgramFiles(x86) environment variable.  Recognize it
 specifically?  First try with the parens, then without.
 
+Patch for multi-byte characters in langmap and applying a mapping on them.
+(Christian Brabandt, 2015 Jun 12)
+Is this the right solution?
+
+Patch for langmap not working properly with mapping in Command-line mode.
+Issue 376.
+
+Patch to add grepfile(). (Scott Prager, 2015 May 26)
+Work in progress.
+
+Patch to make getregtype() return the right size for non-linux systems.
+(Yasuhiro Matsumoto, 2014 Jul 8)
+Breaks test_eval.  Inefficient, can we only compute y_width when needed?
+
 Value returned by virtcol() changes depending on how lines wrap.  This is
 inconsistent with the documentation.
 
 Better greek spell checking.  Issue 299.
 
+Patch to make :diffoff work twice. (Olaf Dabrunz, 2015 Jun 23)
+
+Patch to add 'completeselect' option.  Specifies how to select a candidate in
+insert completion. (Shougo, 2013 May 29)
+Update to add to existing 'completeopt'. 2013 May 30
+Updated update: Shougo 2015 Jun 12
+
 When complete() first argument is before where insert started and 'backspace'
 is Vi compatible, the completion fails. (Hirohito Higashi, 2015 Feb 19)
+
+Patch to fix equivalence classes in regexp. (Dominique Pelle, 2015 Jun 2)
 
 Weird encryption problems on Windows. (Ben Fritz, 2015 Feb 13)
 Goes away when disabling the swap file. (might1, Feb 16)
@@ -121,29 +154,27 @@ Goes away when disabling the swap file. (might1, Feb 16)
 MS-Windows: Crash opening very long file name starting with "\\".
 (Christian Brock, 2012 Jun 29)
 
-Patch to handle directories better for --remote. (xaizek, 2015 Mar 1)
-
-Cursorline background color not mixed with character highlight.
-Patch by Yasuhiro Matsumoto, 2014 Dec 3.
-
 The argument for "-S" is not taken literally, the ":so" command expands
 wildcards.  Add a ":nowild" command modifier?  (ZyX, 2015 March 4)
 
-Problem using diff syntax with cp932 encoding.  Idea from Yasuhiro Matsumoto,
-patch from Ken Takata (2014 Nov 6)
+Build with Python on Mac does not always use the right library.
+(Kazunobu Kuriyama, 2015 Mar 28)
 
 ml_updatechunk() is slow when retrying for another encoding. (John Little,
 2014 Sep 11)
 
-Patch to add counts to zr and zm. (Marcin Szamotulski, 2015 Jan 28)
+Patch to use different terminal mode settings for system(). (Hayaki Saito)
+Does this work for everybody?
 
-Patch to add a different escape sequence for replace mode.
-(Omar Sandoval, 2014 Nov 30)
+Patch to fix that wide characters do not work properly after exiting.
+(Yasuhiro Matsumoto, 2015 May 24) Better patch to come.
 
-Patch on Issue 166, popup drawing with '$' in 'cpo'.
+Patch for man.vim. (SungHyun Nam, 2015 May 20)
+Doesn't work completely (Dominique Orban)
 
-Calling setreg() with an empty list doesn't work.
-Patch by Yasuhiro Matsumoto, 2014 Dec 14.
+When a session file is created and there are "nofile" buffers, these are not
+filled.  Need to trigger BufReadCmd autocommands.  Also handle deleting the
+initial empty buffer better. (ZyX, 2015 March 8)
 
 Extended file attributes lost on write (backupcopy=no).  Issue 306.
 
@@ -154,22 +185,18 @@ Crash when using R syntax. (Jakson Alves de Aquino, 2015 Jan 30)
 Memory freed by ":syn clear" but still referenced, syntax items referenced
 from two windows?  Stopped happening (Feb 5).
 
-Window height computed incorrectly when Vim is minimized.
-Patch to fix this. (Ingo Karkat, 2014 Dec 19)
-
-Patch to fix CTRL-W handling in Insert mode for multi-byte characters.
-(Yasuhiro Matsumoto, 2015 Jan 29, update with test)
-
-Patch to allow values greater than 255 for ctermfg/ctermbg on Windows.
-(Yasuhiro Matsumoto, 2014 Dec 5)
-
 Patch for an extra argument to matchadd() for conceal. (Christian Brabandt,
 2015 Feb 17, update Feb 19)
 
+Patch to add v:completed_item. (Shougo Matsu, 2013 Nov 29).
+Update 2015 Jun 20.
+
+Patch to add :lockjumps. (Carlo Baldassi, 2015 May 25)
+OK to not block marks?
+
 Mixup of highlighting when there is a match and SpellBad. (ZyX, 2015 Jan 1)
 
-Problem caused by patch 7.3.638: window->open does not update window
-correctly. Issue 91.  With patch.
+Patch on issue 79: use 'path' option for filename completion.
 
 Patch to add 'belloff' option. (Christian Brabandt, 2015 Jan 31)
 Update Feb 6.
@@ -216,10 +243,23 @@ With test, Nov 23.
 Wrong scrolling when using incsearch.  Patch by Christian Brabandt, 2014 Dec 4.
 Is this a good solution?
 
+Patch to allow setting w:quickfix_title via setqflist() and setloclist()
+functions. (Christian Brabandt, 2013 May 8, update May 21)
+Patch to add getlocstack() / setlocstack(). (Christian Brabandt, 2013 May 14)
+Second one. Update May 22.
+Update by Daniel Hahler, 2014 Jul 4, Aug 14, Oct 14, Oct 15.
+
+Patch: Let rare word highlighting overrule good word highlighting.
+(Jakson A. Aquino, 2010 Jul 30, again 2011 Jul 2)
+
+Patch to add digits argument to round(). (Yasuhiro Matsumoto, 2015 Apr 26)
+
 Can assign to s:type when a function s:type has been defined.
 Also the other way around: define a function while a variable with that name
 was already defined.
 (Yasuhiro Matsumoto, 2014 Nov 3)
+
+Patch for ordered dict. (Ozaki Kiichi, 2015 May 7)
 
 Patch to make closed folds line up. (Charles Campbell, 2014 Sep 12)
 Remark from Roland Eggner: does it cause crashes? (2014 Dec 12)
@@ -260,8 +300,10 @@ Patch to add argument to :cquit. (Thinca, 2014 Oct 12)
 
 No error for missing endwhile. (ZyX, 2014 Mar 20)
 
-The entries added by matchaddpos() are returned by getmatches() but can't be
-set with setmatches(). (lcd47, 2014 Jun 29)
+Patch to make extend() fail early when it might fail at some point.
+(Olaf Dabrunz, 2015 May 2)  Makes extend() slower, do we still want it?
+Perhaps only the checks that can be done without looping over the dict or
+arguments.
 
 Patch to add :arglocal and :arglists. (Marcin Szamotulski, 2014 Aug 6)
 
@@ -354,7 +396,7 @@ Editing an ascii file as ucs-2 or ucs-4 causes display errors.
 ":Next 1 some-arg" does not complain about trailing argument.  Also for
 various other commands.  (ZyX, 2014 Mar 30)
 
-patch to skip sort if no line matches the expression.
+Patch to skip sort if no line matches the expression.
 (Christian Brabandt, 2014 Jun 25)
 
 Patch to add sortuniq(). (Cade Forester, 2014 Mar 19)
@@ -381,8 +423,6 @@ Remark on the docs.  Should not be a compile time feature.  But then what?
 Completion of ":e" is ":earlier", should be ":edit".  Complete to the matching
 command instead of doing this alphabetically. (Mikel Jorgensen)
 
-Patch to add v:completed_item. (Shougo Matsu, 2013 Nov 29).
-
 Patch to get MSVC version in a nicer way. (Ken Takata, 2014 Jul 24)
 
 Patch to define macros for hardcoded values. (Elias Diem, 2013 Dec 14)
@@ -391,6 +431,9 @@ Several syntax file match "^\s*" which may get underlined if that's in the
 highlight group.  Add a "\zs" after it?
 
 Go through more coverity reports.
+
+The undo file name can get too long. (Issue 346)
+For the path use a hash instead of dir%dir%dir%name  hash%name.
 
 Patch to add ":undorecover", get as much text out of the undo file as
 possible. (Christian Brabandt, 2014 Mar 12, update Aug 22)
@@ -441,9 +484,6 @@ When evaluating expression in backticks, autoload doesn't work.
 
 Using <nr>ifoobar<esc> can slow down Vim.  Patch by Christian Brabandt, 2013
 Dec 13.
-
-Fold can't be opened after ":move". (Ein Brown)
-Patch from Christian Brabandt doesn't fix it completely.
 
 Patch from Christian Brabandt to preserve upper case marks when wiping out a
 buffer. (2013 Dec 9)
@@ -517,12 +557,6 @@ Dialog is too big on Linux too. (David Fishburn, 2013 Sep 2)
 Patch to check whether a buffer is quickfix or a location list.
 (Yasuhiro Matsumoto, 2014 Dec 9)
 
-Patch to allow setting w:quickfix_title via setqflist() and setloclist()
-functions. (Christian Brabandt, 2013 May 8, update May 21)
-Patch to add getlocstack() / setlocstack(). (Christian Brabandt, 2013 May 14)
-Second one. Update May 22.
-Update by Daniel Hahler, 2014 Jul 4, Aug 14, Oct 14, Oct 15.
-
 Patch to make fold updates much faster. (Christian Brabandt, 2012 Dec)
 
 Issue 54: document behavior of -complete, also expands arg.
@@ -571,10 +605,6 @@ signs?  Patch by Christian Brabandt, 2013 Aug 22.
 
 Patch to remove flicker from popup menu. (Yasuhiro Matsumoto, 2013 Aug 15)
 
-Patch to add 'completeselect' option.  Specifies how to select a candidate in
-insert completion. (Shougo, 2013 May 29)
-Update to add to existing 'completeopt'. 2013 May 30
-
 Problem with refresh:always in completion. (Tyler Wade, 2013 Mar 17)
 
 b:undo_ftplugin cannot call a script-local function. (Boris Danilov, 2013 Jan
@@ -608,7 +638,7 @@ line are opened again, but from the wrong directory.  Apply 'autochdir' only
 after starting up?
 
 Patch to add ":ldo" and ":cdo", execute commands over quickfix list and
-location list. (Yegappan Lakshmanan, 2013 Jun 2)
+location list. (Yegappan Lakshmanan, 2013 Jun 2, update 2015 Mar 21)
 
 8   "stl" and "stlnc" in 'fillchars' don't work for multi-byte characters.
     Patch by Christian Wellenbrock, 2013 Jul 5.
@@ -1000,9 +1030,6 @@ Patch for GVimExt to show an icon. (Dominik Riebeling, 2010 Nov 7)
 
 When writing a file > 2Gbyte, the reported number of bytes is negative.
 (Antonio Colombo, 2010 Dec 18)
-
-Patch: Let rare word highlighting overrule good word highlighting.
-(Jakson A. Aquino, 2010 Jul 30, again 2011 Jul 2)
 
 When 'lines' is 25 and 'scrolloff' is 12, "j" scrolls zero or two lines
 instead of one. (Constantin Pan, 2010 Sep 10)
@@ -1412,6 +1439,7 @@ Kondakoff, 2009 May 13)
 
 Problem with 'langmap' being used on the rhs of a mapping. (Nikolai Weibull,
 2008 May 14)
+Possibly related problem: Alexey Muranov, 2015 Apr 2
 
 Problem with CTRL-F. (Charles Campbell, 2008 March 21)
 Only happens with "gvim -geometry "160x26+4+27" -u NONE -U NONE prop.c".
