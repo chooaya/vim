@@ -159,6 +159,8 @@ let g:syntastic_php_php_args = '-l'
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 ".vimrcの再適用  :bufdo source $MYVIMRC
 noremap <Up> <Nop>
 noremap <Down> <Nop>
