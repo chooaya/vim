@@ -150,16 +150,16 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 let g:ref_phpmanual_path = $VIMRUNTIME . '/dict/php-chunked-xhtml'
 let g:neocomplete_php_locale = 'ja'
 "let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_enable_signs = 1
-let g:syntastic_echo_current_error = 1
-let g:syntastic_auto_loc_list = 2
-let g:syntastic_enable_highlighting = 1
-" なんでか分からないけど php コマンドのオプションを上書かないと動かなかった
-let g:syntastic_php_php_args = '-l'
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"let g:syntastic_check_on_open = 0
+"let g:syntastic_enable_signs = 1
+"let g:syntastic_echo_current_error = 1
+"let g:syntastic_auto_loc_list = 2
+"let g:syntastic_enable_highlighting = 1
+"" なんでか分からないけど php コマンドのオプションを上書かないと動かなかった
+"let g:syntastic_php_php_args = '-l'
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 ".vimrcの再適用  :bufdo source $MYVIMRC
@@ -285,7 +285,7 @@ augroup vimrc-checktime
 augroup END
 
 let g:vimfiler_enable_auto_cd = 1
-nnoremap <Leader><Leader><Leader> :<C-u>Unite 
+nnoremap <Leader><Leader><Leader> :<C-u>Unite source<CR> 
 nnoremap <Leader><Leader>l :<C-u>Unite line<CR> 
 nnoremap <Leader><Leader>o :<C-u>Unite outline<CR> 
 nnoremap <Leader><Leader>f :<C-u>Unite file_rec/async<CR> 
