@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: file_ssh.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 14 Jun 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -27,36 +26,9 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-" Global options definition. "{{{
-" External commands.
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_command',
-      \ 'ssh -p PORT HOSTNAME')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_list_command',
-      \ 'ls -lFa')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_copy_directory_command',
-      \ 'scp -P PORT -q -r $srcs $dest')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_copy_file_command',
-      \ 'scp -P PORT -q $srcs $dest')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_delete_file_command',
-      \ 'rm $srcs')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_delete_directory_command',
-      \ 'rm -r $srcs')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_move_command',
-      \ 'mv $srcs $dest')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_mkdir_command',
-      \ 'mkdir $dest')
-call unite#util#set_default(
-      \ 'g:unite_kind_file_ssh_newfile_command',
-      \ 'touch $dest')
-"}}}
+let s:System = unite#util#get_vital().import('System.File')
+
+call neossh#initialize()
 
 function! unite#kinds#file_ssh#initialize() "{{{
 endfunction"}}}
@@ -65,7 +37,7 @@ function! unite#kinds#file_ssh#define() "{{{
   return s:kind
 endfunction"}}}
 
-let s:System = vital#of('unite.vim').import('System.File')
+let s:System = vital#of('unite').import('System.File')
 
 let s:kind = {
       \ 'name' : 'file/ssh',
@@ -81,8 +53,10 @@ let s:kind.action_table.open = {
       \ }
 function! s:kind.action_table.open.func(candidates) "{{{
   if !get(g:, 'vimfiler_as_default_explorer', 0)
-    call unite#print_error("vimfiler is not default explorer.")
-    call unite#print_error("Please set g:vimfiler_as_default_explorer is 1.")
+    call unite#print_error(
+          \ "vimfiler is not loaded or default explorer.")
+    call unite#print_error(
+          \ "You must enable vimfiler and set g:vimfiler_as_default_explorer is 1.")
     return
   endif
 
@@ -132,10 +106,11 @@ endfunction"}}}
 let s:kind.action_table.narrow = {
       \ 'description' : 'narrowing candidates by directory name',
       \ 'is_quit' : 0,
+      \ 'is_start' : 1,
       \ }
 function! s:kind.action_table.narrow.func(candidate) "{{{
   call unite#start_temporary(
-        \ [['file/ssh', a:candidate.action__directory]])
+        \ [['ssh', a:candidate.action__directory]])
 endfunction"}}}
 
 let s:kind.action_table.vimfiler__write = {
@@ -186,7 +161,7 @@ function! s:kind.action_table.vimfiler__shell.func(candidate) "{{{
         \ unite#sources#ssh#parse_path(
         \     vimfiler_current_dir)
   let command_line = unite#sources#ssh#substitute_command(
-        \ g:unite_kind_file_ssh_command, hostname, port)
+        \ g:neossh#ssh_command, hostname, port)
   execute 'VimShellInteractive' command_line
 
   " Change directory.
@@ -197,7 +172,7 @@ function! s:kind.action_table.vimfiler__shell.func(candidate) "{{{
   let files = get(unite#get_context(), 'vimfiler__files', [])
   if !empty(files)
     call setline(line('.'), getline('.') . ' ' . join(files))
-    normal! l
+    call cursor(0, col('.')+1)
   endif
 endfunction"}}}
 
@@ -248,7 +223,7 @@ function! s:kind.action_table.vimfiler__mkdir.func(candidates) "{{{
 
   let dirname = input('New directory name: ',
         \ vimfiler_current_dir,
-        \ 'customlist,unite#sources#ssh#command_complete_directory')
+        \ 'customlist,unite#sources#ssh#complete_directory')
 
   if dirname == ''
     redraw
@@ -289,7 +264,7 @@ function! s:kind.action_table.vimfiler__newfile.func(candidate) "{{{
 
   let filename = input('New files name: ',
         \            vimfiler_current_dir,
-        \            'customlist,unite#sources#ssh#command_complete_file')
+        \            'customlist,unite#sources#ssh#complete_file')
   if filename == ''
     redraw
     echo 'Canceled.'
@@ -315,7 +290,8 @@ function! s:kind.action_table.vimfiler__newfile.func(candidate) "{{{
         \ printf('%s:%d/%s', hostname, port, path), hostname)
   let file.source = 'ssh'
 
-  call unite#mappings#do_action(g:vimfiler_edit_action, [file])
+  call unite#mappings#do_action(
+        \ vimfiler#get_context().edit_action, [file])
 endfunction"}}}
 
 let s:kind.action_table.vimfiler__delete = {
@@ -349,8 +325,12 @@ function! s:kind.action_table.vimfiler__rename.func(candidate) "{{{
         \ context.action__filename :
         \ input(printf('New file name: %s -> ',
         \       a:candidate.action__path), a:candidate.action__path,
-        \       'customlist,unite#sources#ssh#command_complete_file')
+        \       'customlist,unite#sources#ssh#complete_file')
   redraw
+
+  if filename == ''
+    return
+  endif
 
   let [hostname, port, src_path] =
         \ unite#sources#ssh#parse_path(a:candidate.action__path)
@@ -383,7 +363,13 @@ function! s:kind.action_table.vimfiler__copy.func(candidates) "{{{
         \ && context.action__directory != '' ?
         \   context.action__directory :
         \   input('Input destination directory: ', vimfiler_current_dir,
-        \     'customlist,unite#sources#ssh#command_complete_directory')
+        \     'customlist,unite#sources#ssh#complete_directory')
+  redraw
+
+  if dest_dir == ''
+    echo 'Canceled.'
+    return
+  endif
   if dest_dir !~ '/$'
     let dest_dir .= '/'
   endif
@@ -413,13 +399,54 @@ function! s:kind.action_table.vimfiler__move.func(candidates) "{{{
         \ && context.action__directory != '' ?
         \   context.action__directory :
         \   input('Input destination directory: ', vimfiler_current_dir,
-        \     'customlist,unite#sources#ssh#command_complete_directory')
+        \     'customlist,unite#sources#ssh#complete_directory')
+  redraw
+
+  if dest_dir == ''
+    echo 'Canceled.'
+    return
+  endif
   if dest_dir !~ '/$'
     let dest_dir .= '/'
   endif
   let context.action__directory = dest_dir
 
   call unite#sources#ssh#move_files(dest_dir, a:candidates)
+endfunction"}}}
+
+let s:kind.action_table.vimfiler__execute = {
+      \ 'description' : 'open files with associated program in local',
+      \ 'is_selectable' : 1,
+      \ 'is_listed' : 0,
+      \ }
+function! s:kind.action_table.vimfiler__execute.func(candidates) "{{{
+  " Print error if they are directory.
+  if !empty(filter(copy(a:candidates),
+        \ 'v:val.vimfiler__is_directory'))
+    call unite#print_error('You cannot execute directory.')
+    return
+  endif
+
+  if !unite#util#input_yesno('Really want to execute files in local?')
+    echo 'Canceled.'
+    return
+  endif
+
+  for candidate in a:candidates
+    let dest_path = tempname() . (fnamemodify(candidate.action__path, ':e') != '' ?
+          \ '.' . fnamemodify(candidate.action__path, ':e') : '')
+
+    let [hostname, port, src_path] =
+          \ unite#sources#ssh#parse_path(candidate.action__path)
+    let src_path = hostname.':'.src_path
+    if unite#kinds#file_ssh#external('copy_directory',
+          \ port, dest_path, [src_path])
+      call unite#print_error(printf('Failed copy "%s" to "%s" : %s',
+            \ src_path, dest_path, unite#util#get_last_errmsg()))
+    endif
+
+    call s:System.open(dest_path)
+  endfor
 endfunction"}}}
 
 "}}}
@@ -466,7 +493,7 @@ function! unite#kinds#file_ssh#substitute_command(command, port, dest_dir, src_f
 
   let src_files = map(a:src_files, 'substitute(v:val, "/$", "", "")')
   let command_line = unite#sources#ssh#substitute_command(
-        \ g:unite_kind_file_ssh_{a:command}_command, '', a:port)
+        \ g:neossh#{a:command}_command, '', a:port)
 
   " Substitute pattern.
   let command_line = substitute(command_line,

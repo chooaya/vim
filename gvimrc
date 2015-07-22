@@ -330,6 +330,8 @@ nnoremap <Leader><Leader>M :execute ":VimShellInteractive  --split='split \| res
 " ,ih: bashを非同期で起動
 nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR>
 nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
+nnoremap <Leader><Leader>s :VimShellInteractive  --split='split \| resize 55' ssh default<CR> 
+nnoremap <Leader><Leader>S :VimShellInteractive  --split='split \| resize 55' ssh  
 nnoremap <CR> gF
 nnoremap <C-w><CR> <C-w>gF
 " JSONの整形コマンドPYTHON2.6使用

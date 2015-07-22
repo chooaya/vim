@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: ssh.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 27 May 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -188,11 +187,12 @@ function! s:source.vimfiler_check_filetype(args, context) "{{{
   " Read temporary file.
   let current = bufnr('%')
 
-  silent! edit `=tempname`
-  let lines = getbufline(bufnr(tempname), 1, '$')
-  let fileencoding = getbufvar(bufnr(tempname), '&fileencoding')
+  silent! execute 'edit' fnameescape(tempname)
+  let tempbuf = bufnr('%')
+  let lines = getbufline(tempbuf, 1, '$')
+  let fileencoding = getbufvar(tempbuf, '&fileencoding')
   silent execute 'buffer' current
-  silent execute 'bdelete!' bufnr(tempname)
+  silent execute 'bdelete!' tempbuf
   call delete(tempname)
   let dict.vimfiler__encoding = fileencoding
 
@@ -245,30 +245,15 @@ function! s:source.vimfiler_complete(args, context, arglead, cmdline, cursorpos)
   if hostname == '' || substitute(a:arglead, '^//', '', '') !~ '/'
     " No hostname.
     return map(unite#sources#ssh#complete_host(
-          \ a:args, a:context, substitute(a:arglead, '^//', '', ''),
-          \  a:cmdline, a:cursorpos),
-          \   "'//' . v:val . '/'")
+          \ substitute(a:arglead, '^//', '', ''),
+          \  a:cmdline, a:cursorpos), "'//' . v:val . '/'")
   else
     return map(unite#sources#ssh#complete_file(
-          \ a:args, a:context, a:arglead, a:cmdline, a:cursorpos),
-          \   "printf('//%s', v:val)")
+          \ a:arglead, a:cmdline, a:cursorpos), "printf('//%s', v:val)")
   endif
 endfunction"}}}
 function! s:source.complete(args, context, arglead, cmdline, cursorpos) "{{{
-  let arg = join(a:args, ':')
-  let [hostname, port, path] =
-        \ unite#sources#ssh#parse_path(arg)
-  if hostname == '' || arg !~ ':'
-    " No hostname.
-    return map(unite#sources#ssh#complete_host(
-          \ a:args, a:context, substitute(a:arglead, '^//', '', ''),
-          \  a:cmdline, a:cursorpos),
-          \   "'//' . v:val . '/'")
-  else
-    return filter(map(unite#sources#ssh#complete_file(
-          \ a:args, a:context, a:arglead, a:cmdline, a:cursorpos),
-          \   "printf('//%s', v:val)"), "v:val =~ '/$'")
-  endif
+  return self.vimfiler_complete(a:args, a:context, a:arglead, a:cmdline, a:cursorpos)
 endfunction"}}}
 
 function! unite#sources#ssh#system_passwd(...) "{{{
@@ -300,12 +285,16 @@ function! unite#sources#ssh#create_file_dict(file, path, hostname, ...) "{{{
     let dict.vimfiler__filesize = a:file.filesize
 
     " Use date command.
-    let date_command = unite#util#is_mac()
+    let date_command = unite#util#is_mac() || unite#util#is_windows()
           \ || executable('gdate') ? 'gdate' : 'date'
-    if executable(date_command)
+    " On Windows, neither date nor gdate exists by default, and only gdate can
+    " be used. However, if using gVim, gdate will cause an infinite loop
+    " because Vimfiler continually loses and regains focus, so it continues to
+    " attempt a refresh. For simplicity, date parsing is disabled on Windows.
+    if !unite#util#is_windows() && executable(date_command)
       let output = unite#util#system(
-            \ printf('%s -d %s +%%s', date_command,
-          \ string(a:file.filetime)))
+            \ printf('%s -d "%s" +%%s', date_command,
+          \ a:file.filetime))
       if output !~ 'usage:'
         " Ignore error message.
         let dict.vimfiler__filetime = substitute(output, '\n$', '', '')
@@ -322,7 +311,6 @@ function! unite#sources#ssh#create_file_dict(file, path, hostname, ...) "{{{
           \ a:file.group ==# id.group ? a:file.mode[4 : 6] :
           \                             a:file.mode[7 :  ]
 
-    let dict.vimfiler__is_readable = (mode =~# '^r.x$')
     let dict.vimfiler__is_writable = (mode =~# '^.w.$')
   endif
 
@@ -417,13 +405,9 @@ function! unite#sources#ssh#parse2fullpath(path) "{{{
   return [host, port, parsed_path]
 endfunction"}}}
 
-function! unite#sources#ssh#complete_host(args, context, arglead, cmdline, cursorpos) "{{{
-  return unite#sources#ssh#command_complete_host(
-        \ a:arglead, a:cmdline, a:cursorpos)
-endfunction"}}}
-function! unite#sources#ssh#complete_file(args, context, arglead, cmdline, cursorpos) "{{{
+function! unite#sources#ssh#complete_file(arglead, cmdline, cursorpos) "{{{
   let [hostname, port, path] =
-        \ unite#sources#ssh#parse_path(join(a:args, ':'))
+        \ unite#sources#ssh#parse_path(a:cmdline)
   if hostname == ''
     " No hostname.
     return []
@@ -448,24 +432,18 @@ function! unite#sources#ssh#complete_file(args, context, arglead, cmdline, curso
     let port = ':' . port
   endif
 
+  if a:arglead =~ '^ssh:'
+    let hostname = 'ssh://' . hostname
+  endif
+
   return map(files, "printf('%s%s/%s', hostname, port,
         \      substitute(v:val, '[*@|]$', '', ''))")
 endfunction"}}}
-function! unite#sources#ssh#command_complete_directory(arglead, cmdline, cursorpos) "{{{
-  let vimfiler_current_dir =
-        \ get(unite#get_context(), 'vimfiler__current_directory', '')
+function! unite#sources#ssh#complete_directory(arglead, cmdline, cursorpos) "{{{
   return filter(unite#sources#ssh#complete_file(
-        \ split(vimfiler_current_dir, ':'), unite#get_context(),
         \ a:arglead, a:cmdline, a:cursorpos), "v:val =~ '/$'")
 endfunction"}}}
-function! unite#sources#ssh#command_complete_file(arglead, cmdline, cursorpos) "{{{
-  let vimfiler_current_dir =
-        \ get(unite#get_context(), 'vimfiler__current_directory', '')
-  return unite#sources#ssh#complete_file(
-        \ split(vimfiler_current_dir, ':'), unite#get_context(),
-        \ a:arglead, a:cmdline, a:cursorpos)
-endfunction"}}}
-function! unite#sources#ssh#command_complete_host(arglead, cmdline, cursorpos) "{{{
+function! unite#sources#ssh#complete_host(arglead, cmdline, cursorpos) "{{{
   let _ = []
 
   if filereadable('/etc/hosts')
@@ -522,8 +500,7 @@ function! unite#sources#ssh#copy_files(dest, srcs) "{{{
         let dest_path =
               \ input(printf('New name: %s -> ', src_path),
               \ src_path,
-              \ 'customlist,unite#sources#'.
-              \   'ssh#command_complete_file')
+              \ 'customlist,unite#sources#ssh#complete_file')
         redraw!
 
         if dest_path == ''
@@ -594,8 +571,7 @@ function! unite#sources#ssh#move_files(dest, srcs) "{{{
         let dest_path =
               \ input(printf('New name: %s -> ', src_path),
               \ src_path,
-              \ 'customlist,unite#sources#'.
-              \   'ssh#command_complete_file')
+              \ 'customlist,unite#sources#ssh#complete_file')
         redraw!
 
         if dest_path == ''
@@ -610,7 +586,7 @@ function! unite#sources#ssh#move_files(dest, srcs) "{{{
       if status
         call unite#print_error(printf(
               \ 'Failed file "%s" move : %s',
-              \ path, unite#util#get_last_errmsg()))
+              \ src_path, unite#util#get_last_errmsg()))
         let ret = 1
       endif
     else
@@ -676,7 +652,7 @@ function! s:get_filelist(hostname, port, path, is_force) "{{{
   if !has_key(s:filelist_cache, key)
     \ || a:is_force
     let files = map(filter(map(unite#sources#ssh#ssh_list(
-          \ g:unite_kind_file_ssh_list_command,
+          \ g:neossh#list_command,
           \ a:hostname, a:port, a:path),
           \   "split(v:val, '\\s\\+')"),
           \ 'len(v:val) >= 6'), "{
@@ -701,7 +677,7 @@ function! s:get_id(hostname) "{{{
 endfunction"}}}
 function! unite#sources#ssh#ssh_command(command, host, port, path) "{{{
   let command_line = unite#sources#ssh#substitute_command(
-        \ g:unite_kind_file_ssh_command . ' ' . a:command, a:host, a:port)
+        \ g:neossh#ssh_command . ' ' . a:command, a:host, a:port)
   if a:path != ''
     let command_line .= ' ' . string(fnameescape(a:path))
   endif
@@ -726,8 +702,8 @@ function! unite#sources#ssh#ssh_list(command, host, port, path) "{{{
     let $LANG = 'C'
 
     let command_line = unite#sources#ssh#substitute_command(
-          \ printf('%s ''sh -c "LC_TIME=C %s %s"''',
-          \ g:unite_kind_file_ssh_command, a:command, a:path),
+          \ printf('%s "sh -c ''LC_TIME=C %s %s''"',
+          \ g:neossh#ssh_command, a:command, a:path),
           \ a:host, a:port)
     if a:path != ''
       let command_line .= ' ' . string(fnameescape(a:path))
@@ -756,7 +732,7 @@ function! unite#sources#ssh#substitute_command(command, host, port) "{{{
 endfunction"}}}
 function! unite#sources#ssh#tempname(temp) "{{{
   let tempname = unite#util#substitute_path_separator(a:temp)
-  if g:unite_kind_file_ssh_command =~ '^ssh ' && unite#util#is_windows()
+  if g:neossh#ssh_command =~ '^ssh ' && unite#util#is_windows()
     " Fix path for Cygwin ssh command.
     let tempname = substitute(tempname, '^\(\a\+\):', '/cygdrive/\1', '')
   endif
@@ -785,19 +761,6 @@ function! s:parse_filename(files)"{{{
           \ substitute(file.filetime, '\s\+$', '', '')
   endfor
 endfunction"}}}
-
-" Add custom action table. "{{{
-let s:cdable_action_file = {
-      \ 'description' : 'open this directory by file source',
-      \}
-
-function! s:cdable_action_file.func(candidate)
-  call unite#start([['file', a:candidate.action__directory]])
-endfunction
-
-call unite#custom_action('cdable', 'file', s:cdable_action_file)
-unlet! s:cdable_action_file
-"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
