@@ -263,6 +263,7 @@ autocmd FileType vimfiler
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
 nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=30 -simple -find -split -no-quit<CR>
+autocmd VimEnter * VimFiler -split -simple -winwidth=30 -no-quit
 nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -auto-cd -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
