@@ -234,8 +234,7 @@ let @a='find ./  -print | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "S
 let @b=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @c=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i -l "SEARCHTERM2"'
 let @d="ag --ignore-case --nogroup --nocolor --line-numbers  --files-with-matches 'SEARCHTERM1'|xargs ag --ignore-case --nogroup --nocolor --line-numbers --vimgrep 'SEARCHTERM2'"
-let @e=":Qargs | argdo %s///gc | update"
-let @f=":QuickFixDo %s///gc"
+let @e=':Qfdo execute "normal i\<ESC>"'
 
 command! -nargs=? -complete=dir -bang CD  call s:ChangeCurrentDir('<args>', '<bang>')
 function! s:ChangeCurrentDir(directory, bang)
