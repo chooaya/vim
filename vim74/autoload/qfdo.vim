@@ -6,6 +6,7 @@ function! qfdo#QuickFixDo(commands)
     exe 'buf '.d.bufnr
     cal cursor(d.lnum, d.col)
     exe a:commands
+    update
 
   endfor
 
@@ -25,6 +26,7 @@ function! qfdo#QuickFixFileDo(commands)
 
     exe 'buf '.bid
     exe a:commands
+    update
 
   endfor
 
