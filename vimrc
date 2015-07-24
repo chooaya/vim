@@ -93,8 +93,8 @@ if &t_Co > 2 || has("gui_running")
   syntax on
   set hlsearch
 endif
-
 "---------------------------------------------------------------------------以下は共通設定
+set diffopt+=iwhite 
 filetype off
 if has('vim_starting')
   set rtp+=$VIMRUNTIME/bundle/neobundle.vim/
@@ -308,7 +308,6 @@ command! JsonFormat :execute '%!python -m json.tool'
   \ | :set ft=javascript
   \ | :1
 
-let g:EclimCompletionMethod = 'omnifunc'
 
 if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
@@ -318,5 +317,7 @@ if !exists('g:neocomplete#force_omni_input_patterns')
 	  let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
+
+let g:EclimCompletionMethod = 'omnifunc'
 
 let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*.wsz,*.xap,*.docx,*.docm,*.dotx,*.dotm,*.potx,*.potm,*.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx'
