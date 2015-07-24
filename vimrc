@@ -312,7 +312,11 @@ let g:EclimCompletionMethod = 'omnifunc'
 
 if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
-  endif
-  let g:neocomplcache_force_omni_patterns.java = '\k\.\k*'
+endif
+let g:neocomplcache_force_omni_patterns.java = '\k\.\k*'
+if !exists('g:neocomplete#force_omni_input_patterns')
+	  let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
 
 let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*.wsz,*.xap,*.docx,*.docm,*.dotx,*.dotm,*.potx,*.potm,*.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx'
