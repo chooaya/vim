@@ -252,6 +252,32 @@ endfunction
 nmap ,cs :let @*=expand("%")<CR>
 nmap ,cl :let @*=expand("%:p")<CR>
 
+function! s:Gitshowtofile(filename)
+	if executable('git')
+		if filereadable(".git/config")
+			if a:filename == ''
+				if expand("%") == ''
+					execute "%delete" | execute "read !git show " . input("input the branch name:") . ":" . input("input the file path and name:") | execute "1delete" 
+				else
+					execute "%delete" | execute "read !git show " . input("input the branch name:") . ":" . expand("%") | execute "1delete" 
+				endif
+			else
+				if filereadable(a:filename)
+					execute "%delete" | execute "read !git show " . input("input the branch name:") . ":" . a:filename | execute "1delete" 
+				else
+					echo "file inputed is not readable!!"
+				endif
+			endif
+		else
+			echo "git config file is not readable!!"
+		endif
+	else
+		echo "git command is not installed!!"
+	endif
+endfunction
+
+command! -nargs=? Gitshowtofile  call s:Gitshowtofile('<args>')
+
 let g:unite_source_find_command="find"
 autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>B 
@@ -263,12 +289,20 @@ autocmd FileType vimfiler
 
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
-nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=30 -simple -find -split -no-quit<CR>
-autocmd VimEnter * VimFiler -split -simple -winwidth=30 -no-quit
+nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
+autocmd VimEnter * VimFiler -split -simple -winwidth=50 -no-quit
 nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -auto-cd -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 " gr -> grep  , gf -> find , <C-v> -> vim buffer mode , <ESC> -> vimfiler mode
+function! s:vimfiler_width_expr()
+	  let w = vimfiler#get_context().winwidth
+	    return w == winwidth(0) ? w * 2 : w
+    endfunction
+    autocmd FileType vimfiler
+      \ nmap <buffer> <SID>(vimfiler_redraw_screen) <Plug>(vimfiler_redraw_screen)|
+      \ nnoremap <buffer><script><expr> <C-H>
+      \   <SID>vimfiler_width_expr() . "\<C-W>\|\<SID>(vimfiler_redraw_screen)"
 
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
@@ -321,3 +355,7 @@ let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
 let g:EclimCompletionMethod = 'omnifunc'
 
 let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*.wsz,*.xap,*.docx,*.docm,*.dotx,*.dotm,*.potx,*.potm,*.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx'
+
+
+map <Leader>c <Plug>(operator-camelize)
+map <Leader>C <Plug>(operator-decamelize)
