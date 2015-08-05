@@ -94,6 +94,8 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+autocmd FileType php set tags=$HOME/.tags
+autocmd FileType int-phpsh set tags=$HOME/.tags
 set diffopt+=iwhite 
 filetype off
 if has('vim_starting')
@@ -126,6 +128,15 @@ set nowritebackup
 " set noswapfile
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType int-phpsh set filetype=php
+let g:phpcomplete_relax_static_constraint = 1
+let g:phpcomplete_complete_for_unknown_classes = 1
+let g:phpcomplete_search_tags_for_variables = 1
+let g:phpcomplete_min_num_of_chars_for_namespace_completion = 0
+let g:phpcomplete_parse_docblock_comments = 1
+let g:phpcomplete_cache_taglists = 1
+let g:phpcomplete_enhance_jump_to_definition = 1
 if has("lua")
 	let g:neocomplete#enable_at_startup = 1
 	let g:neocomplete#enable_ignore_case = 1
@@ -347,10 +358,24 @@ if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
 endif
 let g:neocomplcache_force_omni_patterns.java = '\k\.\k*'
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 if !exists('g:neocomplete#force_omni_input_patterns')
 	  let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
+let g:neocomplete#force_omni_input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+
+"タグ補完の呼び出しパターン
+if !exists('g:neocomplcache_member_prefix_patterns')
+	let g:neocomplcache_member_prefix_patterns = {}
+endif
+let g:neocomplcache_member_prefix_patterns['php'] = '->\|::'
+
+if !exists('g:neocomplete#sources#member#prefix_patterns')
+	let g:neocomplete#sources#member#prefix_patterns = {}
+endif
+let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
+
 
 let g:EclimCompletionMethod = 'omnifunc'
 
@@ -363,4 +388,5 @@ map <Leader>C <Plug>(operator-decamelize)
 autocmd FileType java nnoremap <silent> <buffer> <leader>i :JavaImport<cr>
 autocmd FileType java nnoremap <silent> <buffer> <leader>d :JavaDocSearch -x declarations<cr>
 autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
+autocmd FileType php nnoremap <silent> <buffer> <cr> g<C-]>
 
