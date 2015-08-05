@@ -150,11 +150,11 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 let g:ref_phpmanual_path = $VIMRUNTIME . '/dict/php-chunked-xhtml'
 let g:neocomplete_php_locale = 'ja'
 "let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_open = 0
-"let g:syntastic_enable_signs = 1
-"let g:syntastic_echo_current_error = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_enable_signs = 0
+let g:syntastic_echo_current_error = 0
 "let g:syntastic_auto_loc_list = 2
-"let g:syntastic_enable_highlighting = 1
+let g:syntastic_enable_highlighting = 0
 "" なんでか分からないけど php コマンドのオプションを上書かないと動かなかった
 "let g:syntastic_php_php_args = '-l'
 "set statusline+=%#warningmsg#
@@ -285,7 +285,7 @@ autocmd FileType vimfiler
 
 autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
-        \ :<C-u>Unite file -default-action=vimfiler<CR>
+        \ :<C-u>Unite file_rec/async -default-action=vimfiler<CR>
 
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
@@ -359,3 +359,8 @@ let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*
 
 map <Leader>c <Plug>(operator-camelize)
 map <Leader>C <Plug>(operator-decamelize)
+
+autocmd FileType java nnoremap <silent> <buffer> <leader>i :JavaImport<cr>
+autocmd FileType java nnoremap <silent> <buffer> <leader>d :JavaDocSearch -x declarations<cr>
+autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
+
