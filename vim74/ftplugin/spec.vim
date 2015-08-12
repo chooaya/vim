@@ -1,8 +1,7 @@
 " Plugin to update the %changelog section of RPM spec files
 " Filename: spec.vim
-" Maintainer: Igor Gnatenko i.gnatenko.brain@gmail.com
-" Former Maintainer: Gustavo Niemeyer <niemeyer@conectiva.com> (until March 2014)
-" Last Change: Mon Jun 01 21:15 MSK 2015 Igor Gnatenko
+" Maintainer: Gustavo Niemeyer <niemeyer@conectiva.com>
+" Last Change: 2012 Mar 07
 
 if exists("b:did_ftplugin")
 	finish
@@ -18,42 +17,22 @@ if !exists("no_plugin_maps") && !exists("no_spec_maps")
 	endif
 endif
 
-if !hasmapto("call <SID>SpecChangelog(\"\")<CR>")
-       noremap <buffer> <unique> <script> <Plug>SpecChangelog :call <SID>SpecChangelog("")<CR>
-endif
-
-if !exists("*s:GetRelVer")
-	function! s:GetRelVer()
-		if has('python')
-python << PYEND
-import sys, datetime, shutil, tempfile
-import vim
-
-try:
-    import rpm
-except ImportError:
-    pass
-else:
-    specfile = vim.current.buffer.name
-    if specfile:
-        spec = rpm.spec(specfile)
-        headers = spec.packages[0].header
-        version = headers['Version']
-        release = ".".join(headers['Release'].split(".")[:-1])
-        vim.command("let ver = " + version)
-        vim.command("let rel = " + release)
-PYEND
-		endif
-	endfunction
-endif
+noremap <buffer> <unique> <script> <Plug>SpecChangelog :call <SID>SpecChangelog("")<CR>
 
 if !exists("*s:SpecChangelog")
 	function s:SpecChangelog(format)
+        let save_time = v:lc_time
 		if strlen(a:format) == 0
 			if !exists("g:spec_chglog_format")
-				let email = input("Name <email address>: ")
-				let g:spec_chglog_format = "%a %b %d %Y " . l:email
-				echo "\r"
+                if !exists("g:packager")
+                    let email = input("Email address: ")
+                    let g:spec_chglog_format = "%a %b %d %Y " . l:email
+                    echo "\r"
+                else
+                    let email = g:packager
+                    let g:spec_chglog_format = "%a %b %d %Y " . l:email
+                    echo "\r"
+                endif
 			endif
 			let format = g:spec_chglog_format
 		else
@@ -89,16 +68,13 @@ if !exists("*s:SpecChangelog")
 			let line = line+1
 		endwhile
 		if (nameline != -1 && verline != -1 && relline != -1)
-			let include_release_info = exists("g:spec_chglog_release_info")
+			let include_release_info = 1
 			let name = s:ParseRpmVars(name, nameline)
 			let ver = s:ParseRpmVars(ver, verline)
 			let rel = s:ParseRpmVars(rel, relline)
 		else
 			let include_release_info = 0
 		endif
-
-		call s:GetRelVer()
-
 		if (chgline == -1)
 			let option = confirm("Can't find %changelog. Create one? ","&End of file\n&Here\n&Cancel",3)
 			if (option == 1)
@@ -113,8 +89,10 @@ if !exists("*s:SpecChangelog")
 			endif
 		endif
 		if (chgline != -1)
-			let parsed_format = "* ".strftime(format)." - ".ver."-".rel
-			let release_info = "+ ".name."-".ver."-".rel
+            execute "language time C"
+			let parsed_format = "* ".strftime(format)
+            execute "language time " . save_time
+			let release_info = ver."-".rel
 			let wrong_format = 0
 			let wrong_release = 0
 			let insert_line = 0
@@ -131,15 +109,14 @@ if !exists("*s:SpecChangelog")
 						execute relline
 						normal 
 						let rel = substitute(strpart(getline(relline),8), '^[	 ]*\([^ 	]\+\)[		]*$','\1','')
-						let release_info = "+ ".name."-".ver."-".rel
+						let release_info = ver."-".rel
 					endif
 				endif
 				let n = 0
-				call append(chgline+n, parsed_format)
 				if include_release_info
-					let n = n + 1
-					call append(chgline+n, release_info)
+                    let parsed_format = parsed_format." ".release_info
 				endif
+				call append(chgline+n, parsed_format)
 				let n = n + 1
 				call append(chgline+n,"- ")
 				let n = n + 1
@@ -181,10 +158,6 @@ if !exists("*s:ParseRpmVars")
 		execute a:strline
 		let definestr = "^[ \t]*%define[ \t]\\+" . varname . "[ \t]\\+\\(.*\\)$"
 		let linenum = search(definestr, "bW")
-		if (linenum == 0)
-			let definestr = substitute(definestr, "%define", "%global", "")
-			let linenum = search(definestr, "bW")
-		endif
 		if (linenum != -1)
 			let ret = ret .  substitute(getline(linenum), definestr, "\\1", "")
 		else

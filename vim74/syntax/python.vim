@@ -1,8 +1,9 @@
 " Vim syntax file
 " Language:	Python
-" Maintainer:	Zvezdan Petkovic <zpetkovic@acm.org>
-" Last Change:	2015 Jun 19
-" Credits:	Neil Schemenauer <nas@python.ca>
+" Maintainer:	Neil Schemenauer <nas@python.ca>
+" Last Change:	2013 Feb 26
+" Credits:	Zvezdan Petkovic <zpetkovic@acm.org>
+"		Neil Schemenauer <nas@python.ca>
 "		Dmitry Vasiliev
 "
 "		This version is a major rewrite by Zvezdan Petkovic.
@@ -94,16 +95,16 @@ syn match   pythonComment	"#.*$" contains=pythonTodo,@Spell
 syn keyword pythonTodo		FIXME NOTE NOTES TODO XXX contained
 
 " Triple-quoted strings can contain doctests.
-syn region  pythonString matchgroup=pythonQuotes
+syn region  pythonString
       \ start=+[uU]\=\z(['"]\)+ end="\z1" skip="\\\\\|\\\z1"
       \ contains=pythonEscape,@Spell
-syn region  pythonString matchgroup=pythonTripleQuotes
+syn region  pythonString
       \ start=+[uU]\=\z('''\|"""\)+ end="\z1" keepend
       \ contains=pythonEscape,pythonSpaceError,pythonDoctest,@Spell
-syn region  pythonRawString matchgroup=pythonQuotes
+syn region  pythonRawString
       \ start=+[uU]\=[rR]\z(['"]\)+ end="\z1" skip="\\\\\|\\\z1"
       \ contains=@Spell
-syn region  pythonRawString matchgroup=pythonTripleQuotes
+syn region  pythonRawString
       \ start=+[uU]\=[rR]\z('''\|"""\)+ end="\z1" keepend
       \ contains=pythonSpaceError,pythonDoctest,@Spell
 
@@ -273,8 +274,6 @@ if version >= 508 || !exists("did_python_syn_inits")
   HiLink pythonTodo		Todo
   HiLink pythonString		String
   HiLink pythonRawString	String
-  HiLink pythonQuotes		String
-  HiLink pythonTripleQuotes	pythonQuotes
   HiLink pythonEscape		Special
   if !exists("python_no_number_highlight")
     HiLink pythonNumber		Number

@@ -128,6 +128,17 @@ if &t_Co > 2 || has("gui_running")
 endif
 
 "---------------------------------------------------------------------------以下は共通設定
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'component': {
+      \   'readonly': '%{&readonly?"x":""}',
+      \ },
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '|', 'right': '|' }
+      \ }
+autocmd FileType php set tags=$HOME/.tags
+autocmd FileType int-phpsh set tags=$HOME/.tags
+set diffopt+=iwhite 
 filetype off
 if has('vim_starting')
   set rtp+=$VIMRUNTIME/bundle/neobundle.vim/
@@ -159,6 +170,15 @@ set nowritebackup
 " set noswapfile
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType int-phpsh set filetype=php
+let g:phpcomplete_relax_static_constraint = 1
+let g:phpcomplete_complete_for_unknown_classes = 1
+let g:phpcomplete_search_tags_for_variables = 1
+let g:phpcomplete_min_num_of_chars_for_namespace_completion = 0
+let g:phpcomplete_parse_docblock_comments = 1
+let g:phpcomplete_cache_taglists = 1
+let g:phpcomplete_enhance_jump_to_definition = 1
 if has("lua")
 	let g:neocomplete#enable_at_startup = 1
 	let g:neocomplete#enable_ignore_case = 1
@@ -183,18 +203,38 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 let g:ref_phpmanual_path = $VIMRUNTIME . '/dict/php-chunked-xhtml'
 let g:neocomplete_php_locale = 'ja'
 "let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_open = 0
-"let g:syntastic_enable_signs = 1
-"let g:syntastic_echo_current_error = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_enable_signs = 0
+let g:syntastic_echo_current_error = 0
 "let g:syntastic_auto_loc_list = 2
-"let g:syntastic_enable_highlighting = 1
+let g:syntastic_enable_highlighting = 0
 "" なんでか分からないけど php コマンドのオプションを上書かないと動かなかった
 "let g:syntastic_php_php_args = '-l'
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+"
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory=expand('$VIMRUNTIME/neosnippets/')
+" Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+  endif
 ".vimrcの再適用  :bufdo source $MYVIMRC
 noremap <Up> <Nop>
 noremap <Down> <Nop>
@@ -267,6 +307,7 @@ let @a='find ./  -print | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "S
 let @b=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @c=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i -l "SEARCHTERM2"'
 let @d="ag --ignore-case --nogroup --nocolor --line-numbers  --files-with-matches 'SEARCHTERM1'|xargs ag --ignore-case --nogroup --nocolor --line-numbers --vimgrep 'SEARCHTERM2'"
+let @e=':Qfdo execute "normal i\<ESC>"'
 
 command! -nargs=? -complete=dir -bang CD  call s:ChangeCurrentDir('<args>', '<bang>')
 function! s:ChangeCurrentDir(directory, bang)
@@ -284,6 +325,32 @@ endfunction
 nmap ,cs :let @*=expand("%")<CR>
 nmap ,cl :let @*=expand("%:p")<CR>
 
+function! s:Gitshowtofile(filename)
+	if executable('git')
+		if filereadable(".git/config")
+			if a:filename == ''
+				if expand("%") == ''
+					execute "%delete" | execute "read !git show " . input("input the branch name:") . ":" . input("input the file path and name:") | execute "1delete" 
+				else
+					execute "%delete" | execute "read !git show " . input("input the branch name:") . ":" . expand("%") | execute "1delete" 
+				endif
+			else
+				if filereadable(a:filename)
+					execute "%delete" | execute "read !git show " . input("input the branch name:") . ":" . a:filename | execute "1delete" 
+				else
+					echo "file inputed is not readable!!"
+				endif
+			endif
+		else
+			echo "git config file is not readable!!"
+		endif
+	else
+		echo "git command is not installed!!"
+	endif
+endfunction
+
+command! -nargs=? Gitshowtofile  call s:Gitshowtofile('<args>')
+
 let g:unite_source_find_command="find"
 autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>B 
@@ -291,15 +358,24 @@ autocmd FileType vimfiler
 
 autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
-        \ :<C-u>Unite file -default-action=vimfiler<CR>
+        \ :<C-u>Unite file_rec/async -default-action=vimfiler<CR>
 
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
-nnoremap <silent> <Leader>N :VimFilerBufferDir -find -split -no-quit<CR>
-nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -no-quit<CR>
+nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
+autocmd VimEnter * VimFiler -split -simple -winwidth=50 -no-quit
+nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -auto-cd -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 " gr -> grep  , gf -> find , <C-v> -> vim buffer mode , <ESC> -> vimfiler mode
+function! s:vimfiler_width_expr()
+	  let w = vimfiler#get_context().winwidth
+	    return w == winwidth(0) ? w * 2 : w
+    endfunction
+    autocmd FileType vimfiler
+      \ nmap <buffer> <SID>(vimfiler_redraw_screen) <Plug>(vimfiler_redraw_screen)|
+      \ nnoremap <buffer><script><expr> <C-H>
+      \   <SID>vimfiler_width_expr() . "\<C-W>\|\<SID>(vimfiler_redraw_screen)"
 
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
@@ -317,7 +393,6 @@ augroup vimrc-checktime
 	autocmd WinEnter * checktime
 augroup END
 
-let g:vimfiler_enable_auto_cd = 1
 nnoremap <Leader><Leader><Leader> :<C-u>Unite source<CR> 
 nnoremap <Leader><Leader>l :<C-u>Unite line<CR> 
 nnoremap <Leader><Leader>o :<C-u>Unite outline<CR> 
@@ -339,3 +414,42 @@ command! JsonFormat :execute '%!python -m json.tool'
   \ | :execute '%!python -c "import re,sys;chr=__builtins__.__dict__.get(\"unichr\", chr);sys.stdout.write(re.sub(r\"\\\\u[0-9a-f]{4}\", lambda x: chr(int(\"0x\" + x.group(0)[2:], 16)).encode(\"utf-8\"), sys.stdin.read()))"'
   \ | :set ft=javascript
   \ | :1
+
+
+if !exists('g:neocomplcache_force_omni_patterns')
+	  let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.java = '\k\.\k*'
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+if !exists('g:neocomplete#force_omni_input_patterns')
+	  let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
+let g:neocomplete#force_omni_input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+
+"タグ補完の呼び出しパターン
+if !exists('g:neocomplcache_member_prefix_patterns')
+	let g:neocomplcache_member_prefix_patterns = {}
+endif
+let g:neocomplcache_member_prefix_patterns['php'] = '->\|::'
+
+if !exists('g:neocomplete#sources#member#prefix_patterns')
+	let g:neocomplete#sources#member#prefix_patterns = {}
+endif
+let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
+
+
+let g:EclimCompletionMethod = 'omnifunc'
+
+let g:zipPlugin_ext = '*.zip,*.jar,*.xpi,*.ja,*.war,*.ear,*.celzip,*.oxt,*.kmz,*.wsz,*.xap,*.docx,*.docm,*.dotx,*.dotm,*.potx,*.potm,*.ppsx,*.ppsm,*.pptx,*.pptm,*.ppam,*.sldx,*.thmx,*.crtx,*.vdw,*.glox,*.gcsx,*.gqsx'
+
+
+map <Leader>c <Plug>(operator-camelize)
+map <Leader>C <Plug>(operator-decamelize)
+
+autocmd FileType java nnoremap <silent> <buffer> <leader>i :JavaImport<cr>
+autocmd FileType java nnoremap <silent> <buffer> <leader>d :JavaDocSearch -x declarations<cr>
+autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
+autocmd FileType php nnoremap <silent> <buffer> <cr> g<C-]>
+autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-action=split -no-start-insert ref/phpmanual -immediately -input=<C-R><C-W><CR>
+nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>

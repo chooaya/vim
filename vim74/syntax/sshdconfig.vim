@@ -36,6 +36,7 @@ syn keyword sshdconfigTodo TODO FIXME NOTE contained
 
 " Constants
 syn keyword sshdconfigYesNo yes no none
+syn keyword sshdconfigOther delayed
 
 syn keyword sshdconfigAddressFamily any inet inet6
 
@@ -58,8 +59,8 @@ syn keyword sshdconfigSysLogFacility LOCAL2 LOCAL3 LOCAL4 LOCAL5 LOCAL6 LOCAL7
 
 syn keyword sshdconfigCompression    delayed
 
-syn match   sshdconfigIPQoS	"af1[1234]"
-syn match   sshdconfigIPQoS	"af2[23]"
+syn match   sshdconfigIPQoS	"af1[123]"
+syn match   sshdconfigIPQoS	"af2[123]"
 syn match   sshdconfigIPQoS	"af3[123]"
 syn match   sshdconfigIPQoS	"af4[123]"
 syn match   sshdconfigIPQoS	"cs[0-7]"
@@ -101,6 +102,10 @@ syn keyword sshdconfigKeyword AllowAgentForwarding
 syn keyword sshdconfigKeyword AllowGroups
 syn keyword sshdconfigKeyword AllowTcpForwarding
 syn keyword sshdconfigKeyword AllowUsers
+syn keyword sshdconfigKeyword AuthenticationMethods
+syn keyword sshdconfigKeyword AuthorizedKeysCommand
+syn keyword sshdconfigKeyword AuthorizedKeysCommandRunAs
+syn keyword sshdconfigKeyword AuthorizedKeysCommandUser
 syn keyword sshdconfigKeyword AuthorizedKeysFile
 syn keyword sshdconfigKeyword AuthorizedPrincipalsFile
 syn keyword sshdconfigKeyword Banner
@@ -116,12 +121,14 @@ syn keyword sshdconfigKeyword DenyUsers
 syn keyword sshdconfigKeyword ForceCommand
 syn keyword sshdconfigKeyword GSSAPIAuthentication
 syn keyword sshdconfigKeyword GSSAPICleanupCredentials
+syn keyword sshdconfigKeyword GSSAPIEnablek5users
 syn keyword sshdconfigKeyword GSSAPIKeyExchange
 syn keyword sshdconfigKeyword GSSAPIStoreCredentialsOnRekey
 syn keyword sshdconfigKeyword GSSAPIStrictAcceptorCheck
 syn keyword sshdconfigKeyword GatewayPorts
 syn keyword sshdconfigKeyword HostCertificate
 syn keyword sshdconfigKeyword HostKey
+syn keyword sshdconfigKeyword HostKeyAgent
 syn keyword sshdconfigKeyword HostbasedAuthentication
 syn keyword sshdconfigKeyword HostbasedUsesNameFromPacketOnly
 syn keyword sshdconfigKeyword IPQoS
@@ -132,6 +139,7 @@ syn keyword sshdconfigKeyword KerberosAuthentication
 syn keyword sshdconfigKeyword KerberosGetAFSToken
 syn keyword sshdconfigKeyword KerberosOrLocalPasswd
 syn keyword sshdconfigKeyword KerberosTicketCleanup
+syn keyword sshdconfigKeyword KerberosUseKuserok
 syn keyword sshdconfigKeyword KexAlgorithms
 syn keyword sshdconfigKeyword KeyRegenerationInterval
 syn keyword sshdconfigKeyword ListenAddress
@@ -148,6 +156,7 @@ syn keyword sshdconfigKeyword PermitEmptyPasswords
 syn keyword sshdconfigKeyword PermitOpen
 syn keyword sshdconfigKeyword PermitRootLogin
 syn keyword sshdconfigKeyword PermitTunnel
+syn keyword sshdconfigKeyword PermitTTY
 syn keyword sshdconfigKeyword PermitUserEnvironment
 syn keyword sshdconfigKeyword PidFile
 syn keyword sshdconfigKeyword Port
@@ -156,6 +165,9 @@ syn keyword sshdconfigKeyword PrintMotd
 syn keyword sshdconfigKeyword Protocol
 syn keyword sshdconfigKeyword PubkeyAuthentication
 syn keyword sshdconfigKeyword RSAAuthentication
+syn keyword sshdconfigKeyword RekeyLimit
+syn keyword sshdconfigKeyword RequiredAuthentications1
+syn keyword sshdconfigKeyword RequiredAuthentications2
 syn keyword sshdconfigKeyword RevokedKeys
 syn keyword sshdconfigKeyword RhostsRSAAuthentication
 syn keyword sshdconfigKeyword ServerKeyBits
@@ -169,6 +181,7 @@ syn keyword sshdconfigKeyword UseDNS
 syn keyword sshdconfigKeyword UseLogin
 syn keyword sshdconfigKeyword UsePAM
 syn keyword sshdconfigKeyword UsePrivilegeSeparation
+syn keyword sshdconfigKeyword VersionAddendum
 syn keyword sshdconfigKeyword X11DisplayOffset
 syn keyword sshdconfigKeyword X11Forwarding
 syn keyword sshdconfigKeyword X11UseLocalhost
@@ -191,6 +204,7 @@ if version >= 508 || !exists("did_sshdconfig_syntax_inits")
   HiLink sshdconfigNumber         sshdconfigConstant
   HiLink sshdconfigConstant       Constant
   HiLink sshdconfigYesNo          sshdconfigEnum
+  HiLink sshdconfigOther          sshdconfigEnum
   HiLink sshdconfigAddressFamily  sshdconfigEnum
   HiLink sshdconfigCipher         sshdconfigEnum
   HiLink sshdconfigMAC            sshdconfigEnum

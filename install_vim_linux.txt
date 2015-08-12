@@ -27,3 +27,27 @@ priority=1
 
 yum --enablerepo=epel,remi,rpmforge info  vim-X11
 sudo yum --enablerepo=epel,remi,rpmforge install -y vim-X11
+###日本語入力
+sudo yum install -y   --enablerepo=epel,remi,rpmforge  protobuf
+wget http://ftp.jaist.ac.jp/pub/Linux/Vine/Vine-6.3/x86_64/Vine/RPMS.main/zinnia-0.06-3vl6.x86_64.rpm
+wget http://ftp.jaist.ac.jp/pub/Linux/Vine/Vine-6.3/x86_64/Vine/RPMS.main/tegaki-zinnia-japanese-0.3-1vl6.noarch.rpm
+wget http://ftp.jaist.ac.jp/pub/Linux/Vine/Vine-6.3/x86_64/Vine/RPMS.main/ibus-mozc-1.5.1090.102-1vl6.x86_64.rpm
+wget http://ftp.jaist.ac.jp/pub/Linux/Vine/Vine-6.3/x86_64/Vine/RPMS.main/mozc-1.5.1090.102-1vl6.x86_64.rpm
+wget http://ftp.jaist.ac.jp/pub/Linux/Vine/Vine-6.3/x86_64/Vine/RPMS.main/mozc-server-1.5.1090.102-1vl6.x86_64.rpm
+wget http://ftp.jaist.ac.jp/pub/Linux/Vine/Vine-6.3/x86_64/Vine/RPMS.main/mozc-utils-gui-1.5.1090.102-1vl6.x86_64.rpm
+
+sudo rpm -ivh zinnia-0.06-3vl6.x86_64.rpm
+sudo rpm -ivh tegaki-zinnia-japanese-0.3-1vl6.noarch.rpm 
+sudo rpm -ivh mozc-server-1.5.1090.102-1vl6.x86_64.rpm
+sudo rpm -ivh ibus-mozc-1.5.1090.102-1vl6.x86_64.rpm
+sudo rpm -ivh mozc-utils-gui-1.5.1090.102-1vl6.x86_64.rpm 
+sudo rpm -ivh mozc-1.5.1090.102-1vl6.x86_64.rpm 
+ibus-setup
+
+##gvim の設定
+ln -s /tmp/cho/share/vim/gvimrc ~/.gvimrc
+cp -r -f /usr/share/vim/vim74/* /tmp/cho/share/vim/vim74/
+cd /usr/share/vim
+sudo rm -r -f vim74
+sudo ln -s /tmp/cho/share/vim/vim74 /usr/share/vim/vim74
+

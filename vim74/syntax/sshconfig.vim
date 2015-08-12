@@ -68,8 +68,8 @@ syn keyword sshconfigSysLogFacility DAEMON USER AUTH AUTHPRIV LOCAL0 LOCAL1
 syn keyword sshconfigSysLogFacility LOCAL2 LOCAL3 LOCAL4 LOCAL5 LOCAL6 LOCAL7
 syn keyword sshconfigAddressFamily  inet inet6
 
-syn match   sshconfigIPQoS	"af1[1234]"
-syn match   sshconfigIPQoS	"af2[23]"
+syn match   sshconfigIPQoS	"af1[123]"
+syn match   sshconfigIPQoS	"af2[123]"
 syn match   sshconfigIPQoS	"af3[123]"
 syn match   sshconfigIPQoS	"af4[123]"
 syn match   sshconfigIPQoS	"cs[0-7]"
@@ -99,10 +99,15 @@ syn case ignore
 
 " Keywords
 syn keyword sshconfigHostSect Host
+syn keyword sshconfigMatchSect Match
 
 syn keyword sshconfigKeyword AddressFamily
 syn keyword sshconfigKeyword BatchMode
 syn keyword sshconfigKeyword BindAddress
+syn keyword sshconfigKeyword CanonicalDomains
+syn keyword sshconfigKeyword CanonicalizeFallbackLocal
+syn keyword sshconfigKeyword CanonicalizeHostname
+syn keyword sshconfigKeyword CanonicalizeMaxDots
 syn keyword sshconfigKeyword ChallengeResponseAuthentication
 syn keyword sshconfigKeyword CheckHostIP
 syn keyword sshconfigKeyword Cipher
@@ -141,6 +146,8 @@ syn keyword sshconfigKeyword HostbasedAuthentication
 syn keyword sshconfigKeyword IPQoS
 syn keyword sshconfigKeyword IdentitiesOnly
 syn keyword sshconfigKeyword IdentityFile
+syn keyword sshconfigKeyword IgnoreUnknown
+syn keyword sshconfigKeyword IPQoS
 syn keyword sshconfigKeyword KbdInteractiveAuthentication
 syn keyword sshconfigKeyword KbdInteractiveDevices
 syn keyword sshconfigKeyword KexAlgorithms
@@ -157,6 +164,7 @@ syn keyword sshconfigKeyword Port
 syn keyword sshconfigKeyword PreferredAuthentications
 syn keyword sshconfigKeyword Protocol
 syn keyword sshconfigKeyword ProxyCommand
+syn keyword sshconfigKeyword ProxyUseFdpass
 syn keyword sshconfigKeyword PubkeyAuthentication
 syn keyword sshconfigKeyword RSAAuthentication
 syn keyword sshconfigKeyword RekeyLimit
@@ -211,6 +219,7 @@ if version >= 508 || !exists("did_sshconfig_syntax_inits")
   HiLink sshconfigSpecial        Special
   HiLink sshconfigKeyword        Keyword
   HiLink sshconfigHostSect       Type
+  HiLink sshconfigMatchSect      Type
   delcommand HiLink
 endif
 
