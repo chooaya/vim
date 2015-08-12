@@ -8,6 +8,10 @@ elseif isdirectory($HOME . '/vimfiles')
 elseif isdirectory($VIM . '/vimfiles')
   let s:CFGHOME=$VIM.'/vimfiles'
 endif
+if !has('gui_running')
+	  set t_Co=256
+	  colorscheme wombat256mod
+endif
 
 
 if !has('gui_running') && s:MSWindows
@@ -94,6 +98,14 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'component': {
+      \   'readonly': '%{&readonly?"x":""}',
+      \ },
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '|', 'right': '|' }
+      \ }
 autocmd FileType php set tags=$HOME/.tags
 autocmd FileType int-phpsh set tags=$HOME/.tags
 set diffopt+=iwhite 
@@ -171,8 +183,28 @@ let g:syntastic_enable_highlighting = 0
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+"
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory=expand('$VIMRUNTIME/neosnippets/')
+" Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+  endif
 ".vimrcの再適用  :bufdo source $MYVIMRC
 noremap <Up> <Nop>
 noremap <Down> <Nop>
@@ -389,4 +421,5 @@ autocmd FileType java nnoremap <silent> <buffer> <leader>i :JavaImport<cr>
 autocmd FileType java nnoremap <silent> <buffer> <leader>d :JavaDocSearch -x declarations<cr>
 autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
 autocmd FileType php nnoremap <silent> <buffer> <cr> g<C-]>
-
+autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-action=split -no-start-insert ref/phpmanual -immediately -input=<C-R><C-W><CR>
+nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>

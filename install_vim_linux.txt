@@ -1,3 +1,29 @@
 sudo yum install python-devel
 sudo ln -s /usr/lib64/libpython2.6.so.1.0 /usr/lib64/libpython2.6.so
 ./configure --prefix=/tmp/cho --enable-luainterp=dynamic --enable-perlinterp=dynamic  --enable-pythoninterp=dynamic --enable-rubyinterp=dynamic  --enable-cscope --enable-gui=auto --enable-gtk2-check  --enable-gnome-check  --with-features=huge --with-x --enable-multibyte --disable-selinux --enable-fail-if-missing
+
+
+###gvim install
+wget http://ftp.riken.jp/Linux/fedora/epel/RPM-GPG-KEY-EPEL-6
+sudo rpm --import RPM-GPG-KEY-EPEL-6
+sudo touch /etc/yum.repos.d/epel.repo
+sudo vi /etc/yum.repos.d/epel.repo
+[epel]
+name=EPEL RPM Repository for Red Hat Enterprise Linux
+baseurl=http://ftp.riken.jp/Linux/fedora/epel/6/$basearch/
+gpgcheck=1
+enabled=0
+
+
+wget http://rpms.famillecollet.com/RPM-GPG-KEY-remi
+sudo rpm --import RPM-GPG-KEY-remi
+sudo vi /etc/yum.repos.d/remi.repo
+[remi]
+name=Les RPM de remi pour Enterprise Linux 5 - $basearch
+baseurl=http://rpms.famillecollet.com/el5.$basearch/
+http://iut-info.univ-reims.fr/remirpms/el5.$basearch/
+enabled=0
+priority=1
+
+yum --enablerepo=epel,remi,rpmforge info  vim-X11
+sudo yum --enablerepo=epel,remi,rpmforge install -y vim-X11
