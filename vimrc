@@ -98,6 +98,7 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+set clipboard=unnamed
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'component': {
@@ -204,12 +205,7 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
-  endif
-".vimrcの再適用  :bufdo source $MYVIMRC
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
+endif
 " 表示行単位で上下移動するように
 nnoremap j gj
 nnoremap k gk

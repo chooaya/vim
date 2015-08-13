@@ -1,36 +1,3 @@
-"----------------------------------------
-" IME
-"----------------------------------------
-if has('multi_byte_ime') || has('xim')
-  set iminsert=0 imsearch=0
-  if has('xim') && has('GUI_GTK')
-    " set imactivatekey=C-Space
-  endif
-endif
-
-if has('multi_byte_ime')
-  highlight Cursor guifg=NONE guibg=Green
-  highlight CursorIM guifg=NONE guibg=Purple
-endif
-
-"----------------------------------------
-" Font
-"----------------------------------------
-if has('xfontset')
-  " set guifontset=a14,r14,k14
-elseif has('mac')
-  " set guifont=Osaka-mono:h14
-elseif has('win32') || has('win64')
-  " set guifont=MS_Gothic:h11:cSHIFTJIS
-endif
-
-if has('printer')
-  if has('win32') || has('win64')
-    " set printfont=MS_Mincho:h12:cSHIFTJIS
-    " set printfont=MS_Gothic:h12:cSHIFTJIS
-  endif
-endif
-colorscheme evening " (GUI使用時)
 set nocompatible
 let s:MSWindows = has('win95') + has('win16') + has('win32') + has('win64')
 
@@ -40,6 +7,10 @@ elseif isdirectory($HOME . '/vimfiles')
   let s:CFGHOME=$HOME.'/vimfiles'
 elseif isdirectory($VIM . '/vimfiles')
   let s:CFGHOME=$VIM.'/vimfiles'
+endif
+if !has('gui_running')
+	  set t_Co=256
+	  colorscheme wombat256mod
 endif
 
 
@@ -126,12 +97,6 @@ if &t_Co > 2 || has("gui_running")
   syntax on
   set hlsearch
 endif
-
-if has("gui_running")
-	map  <silent>  <S-Insert>  "+p
-	imap <silent>  <S-Insert>  <Esc>"+pa
-endif
-
 "---------------------------------------------------------------------------以下は共通設定
 set clipboard=unnamed
 let g:lightline = {
@@ -240,7 +205,12 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
-endif
+  endif
+".vimrcの再適用  :bufdo source $MYVIMRC
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
 " 表示行単位で上下移動するように
 nnoremap j gj
 nnoremap k gk
