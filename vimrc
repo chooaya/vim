@@ -330,7 +330,7 @@ call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
 nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
 autocmd VimEnter * VimFiler -split -simple -winwidth=50 -no-quit
-nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -auto-cd -no-quit<CR>
+nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 " gr -> grep  , gf -> find , <C-v> -> vim buffer mode , <ESC> -> vimfiler mode
@@ -419,3 +419,7 @@ autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
 autocmd FileType php nnoremap <silent> <buffer> <cr> g<C-]>
 autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-action=split -no-start-insert ref/phpmanual -immediately -input=<C-R><C-W><CR>
 nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
+
+" vim-tags
+au BufNewFile,BufRead *.php let g:vim_tags_project_tags_command = "ctags -R --languages=PHP --langmap=PHP:.php.inc -f ~/.tags `pwd` 2>/dev/null "
+
