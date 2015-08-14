@@ -107,8 +107,8 @@ let g:lightline = {
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '|', 'right': '|' }
       \ }
-autocmd FileType php set tags=$HOME/.tags
-autocmd FileType int-phpsh set tags=$HOME/.tags
+autocmd FileType php set tags=$HOME/php.tags
+autocmd FileType int-phpsh set tags=$HOME/php.tags
 set diffopt+=iwhite 
 filetype off
 if has('vim_starting')
@@ -326,9 +326,13 @@ autocmd FileType vimfiler
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>Unite file_rec/async -default-action=vimfiler<CR>
 
+autocmd FileType vimfiler nmap <buffer><silent><RightMouse> q
+autocmd FileType vimfiler nmap <buffer><silent><2-LeftMouse> o
+
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
 nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
+nmap <silent> <RightMouse> 	:VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
 autocmd VimEnter * VimFiler -split -simple -winwidth=50 -no-quit
 nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
@@ -421,5 +425,12 @@ autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-a
 nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
 
 " vim-tags
-au BufNewFile,BufRead *.php let g:vim_tags_project_tags_command = "ctags -R --languages=PHP --langmap=PHP:.php.inc -f ~/.tags `pwd` 2>/dev/null "
+au BufNewFile,BufRead *.php let g:vim_tags_project_tags_command = "rm -f ~/php.tags;ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
 
+let Tlist_Use_Right_Window = 1
+let Tlist_Show_One_File = 1
+let Tlist_Exit_OnlyWindow = 1
+"let g:tlist_php_settings = 'php;c:class;f:function;d:constant'
+nnoremap <Leader>t :Tlist<CR>
+let g:Tlist_Auto_Open = 1
+autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
