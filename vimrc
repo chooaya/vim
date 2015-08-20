@@ -254,6 +254,7 @@ nnoremap <silent> ,u  :let g:unite_source_grep_default_opts = '--nogroup --nocol
 nnoremap <silent> ,dg  :<C-u>Unite grep -buffer-name=search-buffer<CR>
 " カーソル位置の単語をgrep検索
 nnoremap <silent> ,cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W><CR>
+nmap <Leader><LeftMouse> 	:<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W><CR>
 " grep検索結果の再呼出
 nnoremap <silent> ,r  :<C-u>UniteResume search-buffer<CR>
 nnoremap <silent> ,R  :<C-u>UniteResume<CR>
@@ -377,8 +378,8 @@ nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR
 nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
 nnoremap <Leader><Leader>s :VimShellInteractive  --split='split \| resize 55' ssh default<CR> 
 nnoremap <Leader><Leader>S :VimShellInteractive  --split='split \| resize 55' ssh  
-nnoremap <CR> gF
-nnoremap <C-w><CR> <C-w>gF
+"nnoremap <CR> gF
+"nnoremap <C-w><CR> <C-w>gF
 " JSONの整形コマンドPYTHON2.6使用
 command! JsonFormat :execute '%!python -m json.tool'
   \ | :execute '%!python -c "import re,sys;chr=__builtins__.__dict__.get(\"unichr\", chr);sys.stdout.write(re.sub(r\"\\\\u[0-9a-f]{4}\", lambda x: chr(int(\"0x\" + x.group(0)[2:], 16)).encode(\"utf-8\"), sys.stdin.read()))"'
@@ -425,7 +426,7 @@ autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-a
 nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
 
 " vim-tags
-au BufNewFile,BufRead *.php let g:vim_tags_project_tags_command = "rm -f ~/php.tags;ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
+let g:vim_tags_project_tags_command = "ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
 
 let Tlist_Use_Right_Window = 1
 let Tlist_Show_One_File = 1
@@ -433,4 +434,19 @@ let Tlist_Exit_OnlyWindow = 1
 "let g:tlist_php_settings = 'php;c:class;f:function;d:constant'
 nnoremap <Leader>t :Tlist<CR>
 let g:Tlist_Auto_Open = 1
+
+" gtags
+let Gtags_Auto_Update = 1
+let Gtags_No_Auto_Jump = 1
 autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
+autocmd FileType php nmap g<LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
+"autocmd FileType php map <C-LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
+autocmd FileType php nmap g<RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
+"autocmd FileType php map <C-RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
+"autocmd FileType php nmap g<LeftMouse> 	:<C-u>execute 'Unite gtags/context:'.expand('<cword>')<CR>
+
+"let $GTAGSROOT = '/srv/'
+"
+let g:unite_source_gtags_project_config = {
+  \ '_':                   { 'treelize': 0,'absolute_path': 1 }
+  \ }
