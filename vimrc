@@ -98,6 +98,7 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
 set clipboard=unnamed
 let g:lightline = {
       \ 'colorscheme': 'wombat',
@@ -107,8 +108,8 @@ let g:lightline = {
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '|', 'right': '|' }
       \ }
-autocmd FileType php set tags=$HOME/php.tags
-autocmd FileType int-phpsh set tags=$HOME/php.tags
+"autocmd FileType php set tags=$HOME/php.tags
+"autocmd FileType int-phpsh set tags=$HOME/php.tags
 set diffopt+=iwhite 
 filetype off
 if has('vim_starting')
@@ -143,13 +144,6 @@ set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType int-phpsh set filetype=php
-let g:phpcomplete_relax_static_constraint = 1
-let g:phpcomplete_complete_for_unknown_classes = 1
-let g:phpcomplete_search_tags_for_variables = 1
-let g:phpcomplete_min_num_of_chars_for_namespace_completion = 0
-let g:phpcomplete_parse_docblock_comments = 1
-let g:phpcomplete_cache_taglists = 1
-let g:phpcomplete_enhance_jump_to_definition = 1
 if has("lua")
 	let g:neocomplete#enable_at_startup = 1
 	let g:neocomplete#enable_ignore_case = 1
@@ -426,7 +420,7 @@ autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-a
 nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
 
 " vim-tags
-let g:vim_tags_project_tags_command = "ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
+"let g:vim_tags_project_tags_command = "ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
 
 let Tlist_Use_Right_Window = 1
 let Tlist_Show_One_File = 1
@@ -437,16 +431,22 @@ let g:Tlist_Auto_Open = 1
 
 " gtags
 let Gtags_Auto_Update = 1
-let Gtags_No_Auto_Jump = 1
+"let Gtags_No_Auto_Jump = 1
+function! s:gtags_jump_ex()
+	execute 'Gtags '.expand('<cword>')
+endfunction
 autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
-autocmd FileType php nmap g<LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
-"autocmd FileType php map <C-LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
-autocmd FileType php nmap g<RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
+map g<LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
+map <C-LeftMouse>  :call <SID>gtags_jump_ex()<CR>
+map g<RightMouse> 	:<C-u>execute 'Unite gtags/context:'.expand('<cword>')<CR>
+"autocmd FileType php nmap g<RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
 "autocmd FileType php map <C-RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
-"autocmd FileType php nmap g<LeftMouse> 	:<C-u>execute 'Unite gtags/context:'.expand('<cword>')<CR>
 
 "let $GTAGSROOT = '/srv/'
 "
 let g:unite_source_gtags_project_config = {
   \ '_':                   { 'treelize': 0,'absolute_path': 1 }
   \ }
+
+
+
