@@ -98,7 +98,8 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
-autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
+"autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
+autocmd BufEnter * if &filetype == "" | setlocal ft=php| endif
 set clipboard=unnamed
 let g:lightline = {
       \ 'colorscheme': 'wombat',
@@ -143,6 +144,7 @@ set nowritebackup
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+"autocmd FileType php set omnifunc=gtagsomnicomplete#Complete 
 autocmd FileType int-phpsh set filetype=php
 if has("lua")
 	let g:neocomplete#enable_at_startup = 1
@@ -450,3 +452,14 @@ let g:unite_source_gtags_project_config = {
 
 
 
+function! Multiple_cursors_before()
+	if exists(':NeoCompleteLock')==2
+		exe 'NeoCompleteLock'
+	endif
+endfunction
+
+function! Multiple_cursors_after()
+	if exists(':NeoCompleteUnlock')==2
+		exe 'NeoCompleteUnlock'
+	endif
+endfunction
