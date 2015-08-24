@@ -98,6 +98,11 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+set cscopetag
+set cscopequickfix=s0,g0,d0,c-,t0,e0,f0,i0
+let GtagsCscope_Auto_Load = 1
+let GtagsCscope_Keep_Alive = 1
+let GtagsCscope_Absolute_Path = 1
 "autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
 autocmd BufEnter * if &filetype == "" | setlocal ft=php| endif
 set clipboard=unnamed
@@ -439,7 +444,7 @@ function! s:gtags_jump_ex()
 endfunction
 autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
 map g<LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
-map <C-LeftMouse>  :call <SID>gtags_jump_ex()<CR>
+"map <C-LeftMouse>  :call <SID>gtags_jump_ex()<CR>
 map g<RightMouse> 	:<C-u>execute 'Unite gtags/context:'.expand('<cword>')<CR>
 "autocmd FileType php nmap g<RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
 "autocmd FileType php map <C-RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>

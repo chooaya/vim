@@ -57,11 +57,12 @@ def do_findstart(completion_context):
 def do_complete(base):
 
    debug("Base = %s" % str(base))
+   print ("Base = %s" % str(base))
    completions = []
    if base is None or not base:
       return completions
 
-   if (len(base) < 4):
+   if (len(base) < 2):
       return completions
 
    import subprocess
