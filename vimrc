@@ -149,6 +149,7 @@ set nowritebackup
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType php set completefunc=hackcomplete#Complete
 "autocmd FileType php set omnifunc=gtagsomnicomplete#Complete 
 autocmd FileType int-phpsh set filetype=php
 if has("lua")
@@ -392,23 +393,23 @@ if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
 endif
 let g:neocomplcache_force_omni_patterns.java = '\k\.\k*'
-let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\|\h\w*::'
 if !exists('g:neocomplete#force_omni_input_patterns')
 	  let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
-let g:neocomplete#force_omni_input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#force_omni_input_patterns.php = '[^. \t]->\|\h\w*::'
 
 "タグ補完の呼び出しパターン
 if !exists('g:neocomplcache_member_prefix_patterns')
 	let g:neocomplcache_member_prefix_patterns = {}
 endif
-let g:neocomplcache_member_prefix_patterns['php'] = '->\|::'
+"let g:neocomplcache_member_prefix_patterns['php'] = '->\|::'
 
 if !exists('g:neocomplete#sources#member#prefix_patterns')
 	let g:neocomplete#sources#member#prefix_patterns = {}
 endif
-let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
+"let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
 
 
 let g:EclimCompletionMethod = 'omnifunc'
