@@ -98,6 +98,7 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+let g:showmarks_include="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 set cscopetag
 set cscopequickfix=s0,g0,d0,c-,t0,e0,f0,i0
 let GtagsCscope_Auto_Load = 1
@@ -106,14 +107,15 @@ let GtagsCscope_Absolute_Path = 1
 "autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
 autocmd BufEnter * if &filetype == "" | setlocal ft=php| endif
 set clipboard=unnamed
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'component': {
-      \   'readonly': '%{&readonly?"x":""}',
-      \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '|', 'right': '|' }
-      \ }
+"let g:lightline = {
+"      \ 'colorscheme': 'wombat',
+"      \ 'component': {
+"      \   'filename': '%t',
+"      \   'readonly': '%{&readonly?"x":""}',
+"      \ },
+"      \ 'separator': { 'left': '', 'right': '' },
+"      \ 'subseparator': { 'left': '|', 'right': '|' }
+"      \ }
 "autocmd FileType php set tags=$HOME/php.tags
 "autocmd FileType int-phpsh set tags=$HOME/php.tags
 set diffopt+=iwhite 
@@ -125,6 +127,7 @@ if has('vim_starting')
   NeoBundleFetch 'joonty/vdebug'
   call neobundle#end()
 endif
+let g:dbgPavimBreakAtEntry = 0
 
 filetype plugin indent on     " required!
 filetype indent on
@@ -267,11 +270,13 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
   set grepprg=ag\ --ignore-case\ --nogroup\ --nocolor\ --line-numbers\
   set grepformat=%f:%l:%m
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 else
   let g:unite_source_grep_command = 'ack'
   set grepformat=%f:%l:%m
 endif
-
+let g:ctrlp_map = '<space><space>'
+let g:ctrlp_cmd = 'CtrlP'
 let @a='find ./  -print | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @b=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @c=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i -l "SEARCHTERM2"'
@@ -369,6 +374,7 @@ augroup END
 nnoremap <Leader><Leader><Leader> :<C-u>Unite source<CR> 
 nnoremap <Leader><Leader>l :<C-u>Unite line<CR> 
 nnoremap <Leader><Leader>o :<C-u>Unite outline<CR> 
+let g:unite_source_rec_async_command='global -aP'
 nnoremap <Leader><Leader>f :<C-u>Unite file_rec/async<CR> 
 nnoremap <Leader><Leader>b :<C-u>Unite buffer_tab<CR> 
 nnoremap <Leader><Leader>B :<C-u>Unite bookmark<CR> 
@@ -425,7 +431,7 @@ autocmd FileType java nnoremap <silent> <buffer> <leader>d :JavaDocSearch -x dec
 autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
 autocmd FileType php nnoremap <silent> <buffer> <cr> g<C-]>
 autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-action=split -no-start-insert ref/phpmanual -immediately -input=<C-R><C-W><CR>
-nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
+"nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
 
 " vim-tags
 "let g:vim_tags_project_tags_command = "ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
@@ -469,3 +475,11 @@ function! Multiple_cursors_after()
 		exe 'NeoCompleteUnlock'
 	endif
 endfunction
+function! s:Toggle_mouse_ctrl()
+	if &mouse == 'a'
+		set mouse=
+	else
+		set mouse=a
+	endif
+endfunction
+map <silent> <C-\><C-\> :call <SID>Toggle_mouse_ctrl()<CR>

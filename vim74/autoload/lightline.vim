@@ -87,7 +87,7 @@ function! lightline#init() abort
         \ 'active': [ 'tabnum', 'filename', 'modified' ],
         \ 'inactive': [ 'tabnum', 'filename', 'modified' ] }, 'keep')
   call extend(s:lightline.mode_map, {
-        \ 'n': 'NORMAL', 'i': 'INSERT', 'R': 'REPLACE', 'v': 'VISUAL',
+        \ 'n': 'NORMAL' . (&mouse), 'i': 'INSERT', 'R': 'REPLACE', 'v': 'VISUAL',
         \ 'V': 'V-LINE', 'c': 'COMMAND', "\<C-v>": 'V-BLOCK', 's': 'SELECT',
         \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', 't': 'TERMINAL', '?': '      ' }, 'keep')
   let s:lightline._mode_ = {
