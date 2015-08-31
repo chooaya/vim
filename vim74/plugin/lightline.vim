@@ -8,7 +8,7 @@
 if exists('g:loaded_lightline') || v:version < 700
   finish
 endif
-finish
+
 let g:loaded_lightline = 1
 
 let s:save_cpo = &cpo

@@ -270,13 +270,17 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
   set grepprg=ag\ --ignore-case\ --nogroup\ --nocolor\ --line-numbers\
   set grepformat=%f:%l:%m
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 else
   let g:unite_source_grep_command = 'ack'
   set grepformat=%f:%l:%m
 endif
 let g:ctrlp_map = '<space><space>'
 let g:ctrlp_cmd = 'CtrlP'
+"let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+if executable('global')
+	let g:ctrlp_user_command = 'cd %s && global -aP'
+	let g:ctrlp_use_caching = 0
+endif
 let @a='find ./  -print | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @b=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @c=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i -l "SEARCHTERM2"'

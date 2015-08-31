@@ -329,3 +329,12 @@ snippet session
 snippet var_export
 alias inspect
   var_export(${1}, true)
+
+snippet <?
+options head
+        <?php
+        include(getenv("VIM") . "/vim74/tools/test_cake.php");
+        $testMo = ClassRegistry::init('TestModel');
+        var_dump($testMo->testMethod(1));
+        $sqlLog = $testMo->getDataSource()->getLog(false, false);
+        debug($sqlLog , false);
