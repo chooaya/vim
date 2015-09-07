@@ -152,7 +152,9 @@ set nowritebackup
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-autocmd FileType php set completefunc=hackcomplete#Complete
+if executable("hhvm")
+	autocmd FileType php set completefunc=hackcomplete#Complete
+endif
 "autocmd FileType php set omnifunc=gtagsomnicomplete#Complete 
 autocmd FileType int-phpsh set filetype=php
 if has("lua")
@@ -453,7 +455,11 @@ let Gtags_Auto_Update = 1
 function! s:gtags_jump_ex()
 	execute 'Gtags '.expand('<cword>')
 endfunction
-autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
+if executable('ctags')
+	autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
+else
+	autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>Unite -vertical -winwidth=30 outline -direction=botright -no-quit -toggle -buffer-name=outline -silent -wrap -no-start-insert<CR>
+endif
 map g<LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
 "map <C-LeftMouse>  :call <SID>gtags_jump_ex()<CR>
 map g<RightMouse> 	:<C-u>execute 'Unite gtags/context:'.expand('<cword>')<CR>

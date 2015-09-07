@@ -133,17 +133,26 @@ if has("gui_running")
 endif
 
 "---------------------------------------------------------------------------以下は共通設定
+let g:showmarks_include="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+set cscopetag
+set cscopequickfix=s0,g0,d0,c-,t0,e0,f0,i0
+let GtagsCscope_Auto_Load = 1
+let GtagsCscope_Keep_Alive = 1
+let GtagsCscope_Absolute_Path = 1
+"autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
+autocmd BufEnter * if &filetype == "" | setlocal ft=php| endif
 set clipboard=unnamed
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'component': {
-      \   'readonly': '%{&readonly?"x":""}',
-      \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '|', 'right': '|' }
-      \ }
-autocmd FileType php set tags=$HOME/.tags
-autocmd FileType int-phpsh set tags=$HOME/.tags
+"let g:lightline = {
+"      \ 'colorscheme': 'wombat',
+"      \ 'component': {
+"      \   'filename': '%t',
+"      \   'readonly': '%{&readonly?"x":""}',
+"      \ },
+"      \ 'separator': { 'left': '', 'right': '' },
+"      \ 'subseparator': { 'left': '|', 'right': '|' }
+"      \ }
+"autocmd FileType php set tags=$HOME/php.tags
+"autocmd FileType int-phpsh set tags=$HOME/php.tags
 set diffopt+=iwhite 
 filetype off
 if has('vim_starting')
@@ -153,6 +162,7 @@ if has('vim_starting')
   NeoBundleFetch 'joonty/vdebug'
   call neobundle#end()
 endif
+let g:dbgPavimBreakAtEntry = 0
 
 filetype plugin indent on     " required!
 filetype indent on
@@ -177,14 +187,9 @@ set nowritebackup
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType php set completefunc=hackcomplete#Complete
+"autocmd FileType php set omnifunc=gtagsomnicomplete#Complete 
 autocmd FileType int-phpsh set filetype=php
-let g:phpcomplete_relax_static_constraint = 1
-let g:phpcomplete_complete_for_unknown_classes = 1
-let g:phpcomplete_search_tags_for_variables = 1
-let g:phpcomplete_min_num_of_chars_for_namespace_completion = 0
-let g:phpcomplete_parse_docblock_comments = 1
-let g:phpcomplete_cache_taglists = 1
-let g:phpcomplete_enhance_jump_to_definition = 1
 if has("lua")
 	let g:neocomplete#enable_at_startup = 1
 	let g:neocomplete#enable_ignore_case = 1
@@ -289,6 +294,7 @@ nnoremap <silent> ,u  :let g:unite_source_grep_default_opts = '--nogroup --nocol
 nnoremap <silent> ,dg  :<C-u>Unite grep -buffer-name=search-buffer<CR>
 " カーソル位置の単語をgrep検索
 nnoremap <silent> ,cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W><CR>
+nmap <Leader><LeftMouse> 	:<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W><CR>
 " grep検索結果の再呼出
 nnoremap <silent> ,r  :<C-u>UniteResume search-buffer<CR>
 nnoremap <silent> ,R  :<C-u>UniteResume<CR>
@@ -303,7 +309,13 @@ else
   let g:unite_source_grep_command = 'ack'
   set grepformat=%f:%l:%m
 endif
-
+let g:ctrlp_map = '<space><space>'
+let g:ctrlp_cmd = 'CtrlP'
+"let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+if executable('global')
+	let g:ctrlp_user_command = 'cd %s && global -aP'
+	let g:ctrlp_use_caching = 0
+endif
 let @a='find ./  -print | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @b=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i  "SEARCHTERM2"'
 let @c=' | xargs egrep -i  -l "SEARCHTERM1"|xargs egrep -n -i -l "SEARCHTERM2"'
@@ -361,11 +373,15 @@ autocmd FileType vimfiler
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>Unite file_rec/async -default-action=vimfiler<CR>
 
+autocmd FileType vimfiler nmap <buffer><silent><RightMouse> q
+autocmd FileType vimfiler nmap <buffer><silent><2-LeftMouse> o
+
 call unite#custom_default_action("source/find", "vimfiler")
 nnoremap <silent> <Leader>f :<C-u>Unite find:.<CR> 
 nnoremap <silent> <Leader>N :VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
+nmap <silent> <RightMouse> 	:VimFilerBufferDir -winwidth=50 -simple -find -split -no-quit<CR>
 autocmd VimEnter * VimFiler -split -simple -winwidth=50 -no-quit
-nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -auto-cd -no-quit<CR>
+nnoremap <silent> <Leader>n :VimFilerBufferDir -find -split -horizontal -no-quit<CR>
 let g:vimfiler_as_default_explorer = 1
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 " gr -> grep  , gf -> find , <C-v> -> vim buffer mode , <ESC> -> vimfiler mode
@@ -397,6 +413,7 @@ augroup END
 nnoremap <Leader><Leader><Leader> :<C-u>Unite source<CR> 
 nnoremap <Leader><Leader>l :<C-u>Unite line<CR> 
 nnoremap <Leader><Leader>o :<C-u>Unite outline<CR> 
+let g:unite_source_rec_async_command='global -aP'
 nnoremap <Leader><Leader>f :<C-u>Unite file_rec/async<CR> 
 nnoremap <Leader><Leader>b :<C-u>Unite buffer_tab<CR> 
 nnoremap <Leader><Leader>B :<C-u>Unite bookmark<CR> 
@@ -408,8 +425,8 @@ nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR
 nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
 nnoremap <Leader><Leader>s :VimShellInteractive  --split='split \| resize 55' ssh default<CR> 
 nnoremap <Leader><Leader>S :VimShellInteractive  --split='split \| resize 55' ssh  
-nnoremap <CR> gF
-nnoremap <C-w><CR> <C-w>gF
+"nnoremap <CR> gF
+"nnoremap <C-w><CR> <C-w>gF
 " JSONの整形コマンドPYTHON2.6使用
 command! JsonFormat :execute '%!python -m json.tool'
   \ | :execute '%!python -c "import re,sys;chr=__builtins__.__dict__.get(\"unichr\", chr);sys.stdout.write(re.sub(r\"\\\\u[0-9a-f]{4}\", lambda x: chr(int(\"0x\" + x.group(0)[2:], 16)).encode(\"utf-8\"), sys.stdin.read()))"'
@@ -421,23 +438,23 @@ if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
 endif
 let g:neocomplcache_force_omni_patterns.java = '\k\.\k*'
-let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\|\h\w*::'
 if !exists('g:neocomplete#force_omni_input_patterns')
 	  let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.java = '\k\.\k*'
-let g:neocomplete#force_omni_input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#force_omni_input_patterns.php = '[^. \t]->\|\h\w*::'
 
 "タグ補完の呼び出しパターン
 if !exists('g:neocomplcache_member_prefix_patterns')
 	let g:neocomplcache_member_prefix_patterns = {}
 endif
-let g:neocomplcache_member_prefix_patterns['php'] = '->\|::'
+"let g:neocomplcache_member_prefix_patterns['php'] = '->\|::'
 
 if !exists('g:neocomplete#sources#member#prefix_patterns')
 	let g:neocomplete#sources#member#prefix_patterns = {}
 endif
-let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
+"let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
 
 
 let g:EclimCompletionMethod = 'omnifunc'
@@ -453,4 +470,55 @@ autocmd FileType java nnoremap <silent> <buffer> <leader>d :JavaDocSearch -x dec
 autocmd FileType java nnoremap <silent> <buffer> <cr> :JavaSearchContext<cr>
 autocmd FileType php nnoremap <silent> <buffer> <cr> g<C-]>
 autocmd FileType php nnoremap <silent> <buffer> <c-\><cr> :<C-U>Unite -default-action=split -no-start-insert ref/phpmanual -immediately -input=<C-R><C-W><CR>
-nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
+"nnoremap <silent> <C-\><C-\> :<C-u>Unite output:map<cr>
+
+" vim-tags
+"let g:vim_tags_project_tags_command = "ctags -R --fields=+aimS --languages=PHP --langmap=PHP:.php.inc -f ~/php.tags `echo $DEVPATH` 2>/dev/null "
+
+let Tlist_Use_Right_Window = 1
+let Tlist_Show_One_File = 1
+let Tlist_Exit_OnlyWindow = 1
+"let g:tlist_php_settings = 'php;c:class;f:function;d:constant'
+nnoremap <Leader>t :Tlist<CR>
+let g:Tlist_Auto_Open = 1
+
+" gtags
+let Gtags_Auto_Update = 1
+"let Gtags_No_Auto_Jump = 1
+function! s:gtags_jump_ex()
+	execute 'Gtags '.expand('<cword>')
+endfunction
+autocmd FileType php nmap <silent> <MiddleMouse> 	:<C-u>TlistToggle<CR>
+map g<LeftMouse> 	:<C-u>execute 'Gtags -r '.expand('<cword>')<CR>
+"map <C-LeftMouse>  :call <SID>gtags_jump_ex()<CR>
+map g<RightMouse> 	:<C-u>execute 'Unite gtags/context:'.expand('<cword>')<CR>
+"autocmd FileType php nmap g<RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
+"autocmd FileType php map <C-RightMouse> 	:<C-u>execute 'Gtags '.expand('<cword>')<CR>
+
+"let $GTAGSROOT = '/srv/'
+"
+let g:unite_source_gtags_project_config = {
+  \ '_':                   { 'treelize': 0,'absolute_path': 1 }
+  \ }
+
+
+
+function! Multiple_cursors_before()
+	if exists(':NeoCompleteLock')==2
+		exe 'NeoCompleteLock'
+	endif
+endfunction
+
+function! Multiple_cursors_after()
+	if exists(':NeoCompleteUnlock')==2
+		exe 'NeoCompleteUnlock'
+	endif
+endfunction
+function! s:Toggle_mouse_ctrl()
+	if &mouse == 'a'
+		set mouse=
+	else
+		set mouse=a
+	endif
+endfunction
+map <silent> <C-\><C-\> :call <SID>Toggle_mouse_ctrl()<CR>
