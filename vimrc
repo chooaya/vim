@@ -98,12 +98,24 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+set imdisable
+let g:eskk_dictionary = expand('$VIMRUNTIME/SKK_JISYO/')
+let g:eskk#directory = expand('$VIMRUNTIME/SKK_JISYO/')
+let g:eskk#log_cmdline_level = 4
+let g:eskk#enable_completion = 1
+let g:eskk_debug = 0
+let g:eskk_egg_like_newline = 1
+let g:eskk_revert_henkan_style = "okuri"
+let g:eskk_enable_completion = 1
+let g:eskk#initial_mode = "hira"
 let g:showmarks_include="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 set cscopetag
 set cscopequickfix=s0,g0,d0,c-,t0,e0,f0,i0
 let GtagsCscope_Auto_Load = 1
 let GtagsCscope_Keep_Alive = 1
 let GtagsCscope_Absolute_Path = 1
+let g:php_refactor_command='php ' . expand('$VIMRUNTIME/tools/refactor.phar')
+autocmd FileType php noremap <buffer> <space>r :call PhpRefactorShowMenu()<CR>
 "autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
 autocmd BufEnter * if &filetype == "" | setlocal ft=php| endif
 set clipboard=unnamed
@@ -137,8 +149,9 @@ if has('mouse')
   set mouse=a
   set ttymouse=xterm2
 endif
-let $LANG='ja_JP.UTF-8'
+"let $LANG='ja_JP.UTF-8'
 "language messages ja_jp.UTF-8
+language mes en_US.utf8
 set encoding=utf-8
 set fileencodings=utf-8
 syntax on
@@ -488,8 +501,12 @@ endfunction
 function! s:Toggle_mouse_ctrl()
 	if &mouse == 'a'
 		set mouse=
+		set nonumber
+		set paste
 	else
 		set mouse=a
+		set number
+		set nopaste
 	endif
 endfunction
 map <silent> <C-\><C-\> :call <SID>Toggle_mouse_ctrl()<CR>
