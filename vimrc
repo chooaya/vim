@@ -165,6 +165,14 @@ set nowritebackup
 set swapfile
 autocmd BufRead *.php\|*.ctp\|*.tpl :set dictionary=$VIMRUNTIME/dict/php.dict filetype=php
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+let g:phpcomplete_relax_static_constraint = 1
+let g:phpcomplete_complete_for_unknown_classes = 1
+let g:phpcomplete_search_tags_for_variables = 1
+let g:phpcomplete_min_num_of_chars_for_namespace_completion = 0
+let g:phpcomplete_parse_docblock_comments = 1
+let g:phpcomplete_cache_taglists = 1
+let g:phpcomplete_enhance_jump_to_definition = 1
+let g:phpcomplete_mappings = {'jump_to_def': '<space><CR>'}
 if executable("hhvm")
 	autocmd FileType php set completefunc=hackcomplete#Complete
 endif
@@ -510,3 +518,21 @@ function! s:Toggle_mouse_ctrl()
 	endif
 endfunction
 map <silent> <C-\><C-\> :call <SID>Toggle_mouse_ctrl()<CR>
+
+let g:vdebug_options = {
+\    "port" : 10000,
+\    "timeout" : 20,
+\    "server" : '',
+\    "on_close" : 'stop',
+\    "break_on_open" : 1,
+\    "ide_key" : '',
+\    "debug_window_level" : 0,
+\    "debug_file_level" : 0,
+\    "debug_file" : "",
+\    "path_maps" : {},
+\    "watch_window_style" : 'expanded',
+\    "marker_default" : '⬦',
+\    "marker_closed_tree" : '▸',
+\    "marker_open_tree" : '▾',
+\    "continuous_mode"  : 0
+\}
