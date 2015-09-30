@@ -1,0 +1,79 @@
+Please report this error to author.
+`:help eskk` to see author's e-mail address.
+
+2015年09月30日 16時30分01秒
+
+--- char ---
+char: ''(0)
+mode(): n
+--- char ---
+
+--- exception ---
+exception type: Vim internal error
+v:exception: Can't read '/home/vagrant/.skk-jisyo'!
+v:throwpoint: function <SNR>51_cmd_update_dictionary..eskk#get_skk_dict..eskk#dictionary#new..<SNR>308_Dictionary_new..<SNR>308_PhysicalDict_new..<SNR>308_PhysicalDict_update_lines..<SNR>308_PhysicalDict_update_lines_main, 行 2
+
+   function <SNR>308_PhysicalDict_update_lines_main() dict
+1      unlockvar 1 self._content_lines
+2      let self._content_lines  = readfile(self.path)
+3      lockvar 1 self._content_lines
+4      call self.parse_lines()
+5   
+6      let self._ftime_at_set = getftime(self.path)
+   endfunction
+--- exception ---
+
+--- preedit ---
+(no preedit)
+--- preedit ---
+
+--- Vim's :version ---
+VIM - Vi IMproved 7.4 (2013 Aug 10, compiled Jul 17 2015 19:34:44)
+適用済パッチ: 1-764
+Compiled by vagrant@daily
+Huge 版 without GUI.  機能の一覧 有効(+)/無効(-)
++acl             +comments        +ex_extra        +jumplist        -mouseshape      +path_extra      +signs           +textobjects     +writebackup
++arabic          +conceal         +extra_search    +keymap          +mouse_dec       +perl/dyn        +smartindent     +title           -X11
++autocmd         +cryptv          +farsi           +langmap         -mouse_gpm       +persistent_undo -sniff           -toolbar         -xfontset
+-balloon_eval    +cscope          +file_in_path    +libcall         -mouse_jsbterm   +postscript      +startuptime     +user_commands   -xim
+-browse          +cursorbind      +find_in_path    +linebreak       +mouse_netterm   +printer         +statusline      +vertsplit       -xsmp
+++builtin_terms  +cursorshape     +float           +lispindent      +mouse_sgr       +profile         -sun_workshop    +virtualedit     -xterm_clipboard
++byte_offset     +dialog_con      +folding         +listcmds        -mouse_sysmouse  +python/dyn      +syntax          +visual          -xterm_save
++cindent         +diff            -footer          +localmap        +mouse_urxvt     -python3         +tag_binary      +visualextra     -xpm
+-clientserver    +digraphs        +fork()          +lua/dyn         +mouse_xterm     +quickfix        +tag_old_static  +viminfo         
+-clipboard       -dnd             +gettext         +menu            +multi_byte      +reltime         -tag_any_white   +vreplace        
++cmdline_compl   -ebcdic          -hangul_input    +mksession       +multi_lang      +rightleft       -tcl             +wildignore      
++cmdline_hist    +emacs_tags      +iconv           +modify_fname    -mzscheme        +ruby/dyn        +terminfo        +wildmenu        
++cmdline_info    +eval            +insert_expand   +mouse           +netbeans_intg   +scrollbind      +termresponse    +windows         
+      システム vimrc: "$VIM/vimrc"
+        ユーザ vimrc: "$HOME/.vimrc"
+     第2ユーザ vimrc: "~/.vim/vimrc"
+         ユーザ exrc: "$HOME/.exrc"
+       省略時の $VIM: "/tmp/cho/share/vim"
+コンパイル: gcc -c -I. -Iproto -DHAVE_CONFIG_H     -g -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1       
+リンク: gcc   -L. -L/usr/local/rbenv/versions/2.0.0-p353/lib  -fstack-protector -rdynamic -Wl,-export-dynamic -Wl,-E -Wl,-rpath,/usr/lib64/perl5/CORE   -L/usr/local/lib -Wl,--as-needed -o vim        -lm -ltinfo -lnsl   -ldl   -Wl,-E -Wl,-rpath,/usr/lib64/perl5/CORE  -fstack-protector  -L/usr/lib64/perl5/CORE -lperl -lresolv -lnsl -ldl -lm -lcrypt -lutil -lpthread -lc        
+--- Vim's :version ---
+
+
+--- Operating System ---
+"uname -a" = Linux daily 2.6.32-573.3.1.el6.x86_64 #1 SMP Thu Aug 13 22:55:16 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+--- Operating System ---
+
+--- feature-list ---
+gui_running = 0
+unix = 1
+mac = 0
+macunix = 0
+win16 = 0
+win32 = 0
+win64 = 0
+win32unix = 0
+win95 = 0
+amiga = 0
+beos = 0
+dos16 = 0
+dos32 = 0
+os2 = 0
+qnx = 0
+vms = 0
+--- feature-list ---

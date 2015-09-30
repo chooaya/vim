@@ -536,3 +536,16 @@ let g:vdebug_options = {
 \    "marker_open_tree" : '▾',
 \    "continuous_mode"  : 0
 \}
+
+
+
+
+function! Func() range
+	let tmp = @@
+	silent normal gvy
+	let selected = @@
+	let @@ = tmp
+	echo selected
+endfunction
+
+command! -range Func :call Func()
