@@ -520,7 +520,7 @@ endfunction
 map <silent> <C-\><C-\> :call <SID>Toggle_mouse_ctrl()<CR>
 
 let g:vdebug_options = {
-\    "port" : 10000,
+\    "port" : 9000,
 \    "timeout" : 20,
 \    "server" : '',
 \    "on_close" : 'stop',
