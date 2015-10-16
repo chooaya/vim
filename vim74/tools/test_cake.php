@@ -65,3 +65,5 @@ if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_o_g_p;
 
 $h_c = "Test_Controller:\n  var_dump(Test_Controller_Function('TestController','testMethod',array('test'))); \n";
 if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_c;
+if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo 'TO CLEAR HELP INFO,TRY "$DISPLAY_ALL_CAKE_HELP_INFO = false;" ';
+
