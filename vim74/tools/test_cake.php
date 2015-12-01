@@ -14,12 +14,24 @@ if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $all_m;
 $h_m = "Default_Test_Model:\n  var_dump(ClassRegistry::init('TestModel')->testMethod('test')); \n";
 if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_m;
 
-function Test_Controller_Function($controller_name,$method_name,$method_args = array())
+function Test_Controller_Function($controller_name,$method_name,$method_args = array(),$set_object_property = array())
 {
 	try {
 		$controller_ReflectionClass = new ReflectionClass($controller_name);
 		$o = $controller_ReflectionClass->newInstance();
 		$reflection = new ReflectionObject($o);
+		if (!empty($set_object_property))
+		{
+			foreach ($set_object_property as $property_name => $value) {
+				try {
+					$property = $reflection->getProperty($property_name);
+					$property->setAccessible(true);
+					$property->setValue($o, $value);
+				} catch (Exception $e) {
+					$o->$property_name = $value;
+				}
+			}
+		}
 		$m = $reflection->getMethod($method_name);
 		$m->setAccessible(true);
 		return $m->invokeArgs($o, $method_args);
@@ -28,6 +40,18 @@ function Test_Controller_Function($controller_name,$method_name,$method_args = a
 		$controller_ReflectionClass = new ReflectionClass($controller_name);
 		$o = $controller_ReflectionClass->newInstance();
 		$reflection = new ReflectionObject($o);
+		if (!empty($set_object_property))
+		{
+			foreach ($set_object_property as $property_name => $value) {
+				try {
+					$property = $reflection->getProperty($property_name);
+					$property->setAccessible(true);
+					$property->setValue($o, $value);
+				} catch (Exception $e) {
+					$o->$property_name = $value;
+				}
+			}
+		}
 		$m = $reflection->getMethod($method_name);
 		$m->setAccessible(true);
 		return $m->invokeArgs($o, $method_args);
@@ -73,7 +97,7 @@ if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_o_s_p;
 $h_o_g_p = "Test_Get_Object_Property:\n  var_dump(Test_Get_Object_Property(obj,'property_name')); \n";
 if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_o_g_p;
 
-$h_c = "Test_Controller:\n  var_dump(Test_Controller_Function('TestController','testMethod',array('test'))); \n";
+$h_c = "Test_Controller:\n  var_dump(Test_Controller_Function('TestController','testMethod',array('test'),set_object_property)); \n";
 if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_c;
 if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo 'TO CLEAR HELP INFO,TRY "$DISPLAY_ALL_CAKE_HELP_INFO = false;" ';
 
