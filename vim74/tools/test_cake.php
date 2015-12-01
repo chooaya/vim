@@ -16,12 +16,22 @@ if (!isset($DISPLAY_ALL_CAKE_HELP_INFO)) echo $h_m;
 
 function Test_Controller_Function($controller_name,$method_name,$method_args = array())
 {
-	$controller_ReflectionClass = new ReflectionClass($controller_name);
-	$o = $controller_ReflectionClass->newInstance();
-	$reflection = new ReflectionObject($o);
-	$m = $reflection->getMethod($method_name);
-	$m->setAccessible(true);
-	return $m->invokeArgs($o, $method_args);
+	try {
+		$controller_ReflectionClass = new ReflectionClass($controller_name);
+		$o = $controller_ReflectionClass->newInstance();
+		$reflection = new ReflectionObject($o);
+		$m = $reflection->getMethod($method_name);
+		$m->setAccessible(true);
+		return $m->invokeArgs($o, $method_args);
+	} catch (Exception $e) {
+		App::uses($controller_name, 'Console/Command');	
+		$controller_ReflectionClass = new ReflectionClass($controller_name);
+		$o = $controller_ReflectionClass->newInstance();
+		$reflection = new ReflectionObject($o);
+		$m = $reflection->getMethod($method_name);
+		$m->setAccessible(true);
+		return $m->invokeArgs($o, $method_args);
+	}
 }
 
 function Test_Model_Function($model_name,$method_name,$method_args = array())
