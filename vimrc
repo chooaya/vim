@@ -98,6 +98,9 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+set expandtab
+set tabstop=4
+set shiftwidth=4
 map <silent> <C-@> <nop>
 imap <silent> <C-@> <nop>
 cmap <silent> <C-@> <nop>
