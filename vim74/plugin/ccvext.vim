@@ -126,8 +126,8 @@ if !executable ('ctags')
 endif
 
 if !executable ('cscope')
-    echomsg 'cscope: cscope (http://cscope.sourceforge.net/) ' .
-            \ 'not found in PATH. Plugin is not full loaded.'
+    "echomsg 'cscope: cscope (http://cscope.sourceforge.net/) ' .
+    "        \ 'not found in PATH. Plugin is not full loaded.'
 endif
 
 if !executable ('ctags') && !executable ('cscope')
