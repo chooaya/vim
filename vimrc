@@ -104,6 +104,12 @@ set shiftwidth=4
 map <silent> <C-@> <nop>
 imap <silent> <C-@> <nop>
 cmap <silent> <C-@> <nop>
+let g:indent_guides_auto_colors=0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626 ctermbg=gray
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c ctermbg=darkgray
+let g:indent_guides_enable_on_vim_startup=0
+let g:indent_guides_guide_size=1
+let g:indent_guides_color_change_percent = 30
 set imdisable
 let g:eskk_dictionary = expand('$VIMRUNTIME/SKK_JISYO/')
 let g:eskk#directory = expand('$VIMRUNTIME/SKK_JISYO/')
@@ -517,10 +523,12 @@ function! s:Toggle_mouse_ctrl()
 		set mouse=
 		set nonumber
 		set paste
+		exe 'IndentGuidesEnable'
 	else
 		set mouse=a
 		set number
 		set nopaste
+		exe 'IndentGuidesDisable'
 	endif
 endfunction
 map <silent> <C-\><C-\> :call <SID>Toggle_mouse_ctrl()<CR>
@@ -565,6 +573,3 @@ let g:quickrun_config._ = {'runner' : 'vimproc', "runner/vimproc/updatetime" : 1
 
 
 
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_color_change_percent = 30
-let g:indent_guides_guide_size = 1
