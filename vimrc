@@ -98,6 +98,9 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+map <silent> <C-@> <nop>
+imap <silent> <C-@> <nop>
+cmap <silent> <C-@> <nop>
 set imdisable
 let g:eskk_dictionary = expand('$VIMRUNTIME/SKK_JISYO/')
 let g:eskk#directory = expand('$VIMRUNTIME/SKK_JISYO/')
@@ -559,4 +562,3 @@ let g:quickrun_config._ = {'runner' : 'vimproc', "runner/vimproc/updatetime" : 1
 
 
 
-imap <silent> <C-@> <nop>
