@@ -121,8 +121,8 @@ let s:postfix = ['"*.java"', '"*.h"', '"*.c"', '"*.hpp"', '"*.cpp"', '"*.cc"', '
 "}}}
 "Check software environment {{{
 if !executable ('ctags')
-    echomsg 'Taglist: Exuberant ctags (http://ctags.sf.net) ' .
-            \ 'not found in PATH. Plugin is not full loaded.'
+    "echomsg 'Taglist: Exuberant ctags (http://ctags.sf.net) ' .
+    "        \ 'not found in PATH. Plugin is not full loaded.'
 endif
 
 if !executable ('cscope')
@@ -612,9 +612,9 @@ hi default_hi_color ctermbg=Cyan ctermfg=Black guibg=#8CCBEA guifg=Black
 function! EnQuickSnippet ()
     "ctags is necessary
     if !executable ('ctags')
-        echomsg 'ctags error(ctags is necessary): ' . 
-                    \'Exuberant ctags (http://ctags.sf.net) ' .
-                    \ 'not found in PATH. Plugin is not full loaded.'
+        "echomsg 'ctags error(ctags is necessary): ' . 
+        "            \'Exuberant ctags (http://ctags.sf.net) ' .
+        "            \ 'not found in PATH. Plugin is not full loaded.'
         return 'false'
     endif
 
