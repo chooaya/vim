@@ -425,6 +425,8 @@ nnoremap <silent> ,ih :VimShellInteractive  --split='split \| resize 55' bash<CR
 nnoremap <Leader><Leader>h :VimShellInteractive  --split='split \| resize 55' bash<CR> 
 nnoremap <Leader><Leader>s :VimShellInteractive  --split='split \| resize 55' ssh default<CR> 
 nnoremap <Leader><Leader>S :VimShellInteractive  --split='split \| resize 55' ssh  
+autocmd BufRead *.txt\|*.TXT nnoremap <CR> <C-w>gF
+"autocmd BufRead *.txt\|*.TXT nnoremap <C-w><CR> <C-w>gF
 "nnoremap <CR> gF
 "nnoremap <C-w><CR> <C-w>gF
 " JSONの整形コマンドPYTHON2.6使用
