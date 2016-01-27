@@ -68,8 +68,21 @@ function! s:do_replace()
     endif
     if e.text !=# new_text
       if getline(e.lnum) !=# s:chomp(e.text)
-        call setline(e.lnum, new_text)
-        let e.text = new_text
+        let old__text = substitute(getline(e.lnum), '^\s*\(.\{-}\)\s*$', '\1', '')
+        let e__text = substitute(s:chomp(e.text), '^\s*\(.\{-}\)\s*$', '\1', '')
+        if old__text !=# e__text
+            call s:echoerr(printf(
+                        \  'qfreplace: Original text has changed: %s:%d',
+                        \   bufname(e.bufnr), e.lnum))
+            call s:echoerr('-------------------------------')
+            call s:echoerr(getline(e.lnum))
+            call s:echoerr('-------------------------------')
+            call s:echoerr(s:chomp(e.text))
+            call s:echoerr('-------------------------------')
+        else
+            call setline(e.lnum, new_text)
+            let e.text = new_text
+        endif
       else
         call setline(e.lnum, new_text)
         let e.text = new_text
