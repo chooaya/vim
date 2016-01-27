@@ -74,11 +74,12 @@ function! s:do_replace()
             call s:echoerr(printf(
                         \  'qfreplace: Original text has changed: %s:%d',
                         \   bufname(e.bufnr), e.lnum))
-            call s:echoerr('-------------------------------')
-            call s:echoerr(getline(e.lnum))
-            call s:echoerr('-------------------------------')
-            call s:echoerr(s:chomp(e.text))
-            call s:echoerr('-------------------------------')
+            call s:echoerr('----------Original text------------')
+            call s:echoerr(old__text)
+            call s:echoerr('----------Original text------------')
+            call s:echoerr('----------Current text(before edit)------------')
+            call s:echoerr(e__text)
+            call s:echoerr('----------Current text(before edit)------------')
         else
             call setline(e.lnum, new_text)
             let e.text = new_text
