@@ -14,3 +14,5 @@ let b:undo_ftplugin = "set stl<"
 
 " Display the command that produced the list in the quickfix window:
 setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ %P
+
+nnoremap q :Qfreplace<CR>
