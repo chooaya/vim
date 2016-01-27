@@ -68,9 +68,8 @@ function! s:do_replace()
     endif
     if e.text !=# new_text
       if getline(e.lnum) !=# s:chomp(e.text)
-        call s:echoerr(printf(
-        \  'qfreplace: Original text has changed: %s:%d',
-        \   bufname(e.bufnr), e.lnum))
+        call setline(e.lnum, new_text)
+        let e.text = new_text
       else
         call setline(e.lnum, new_text)
         let e.text = new_text
