@@ -63,18 +63,14 @@ function! s:do_find_same_line()
       endif
       execute e.bufnr 'buffer'
     endif
-    if getline(e.lnum) !=# s:chomp(e.text)
-        let old__text = substitute(getline(e.lnum), '^\s*\(.\{-}\)\s*$', '\1', '')
-        let e__text = substitute(s:chomp(e.text), '^\s*\(.\{-}\)\s*$', '\1', '')
-        if old__text !=# e__text
-        else
-            call s:echoerr(printf(
-                        \  'qfreplace: Original text is same: %s:%d',
-                        \   bufname(e.bufnr), e.lnum))
-            call s:echoerr(old__text)
-        endif
+    let old__text = substitute(getline(e.lnum), '^\s*\(.\{-}\)\s*$', '\1', '')
+    let e__text = substitute(s:chomp(e.text), '^\s*\(.\{-}\)\s*$', '\1', '')
+    if old__text !=# e__text
     else
-        "
+        call s:echoerr(printf(
+                    \  'qfreplace: Original text is same: %s:%d',
+                    \   bufname(e.bufnr), e.lnum))
+        call s:echoerr(old__text)
     endif
     let prev_bufnr = e.bufnr
   endfor
