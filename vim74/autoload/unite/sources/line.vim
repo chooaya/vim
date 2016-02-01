@@ -151,7 +151,7 @@ let s:source_line.converters = [s:source_line.source__converter]
 function! s:on_gather_candidates(direction, context, start, max) "{{{
   return map(s:get_lines(a:context, a:direction, a:start, a:max), "{
         \ 'word' : v:val[1],
-        \ 'is_multiline' : 1,
+        \ 'is_multiline' : 0,
         \ 'action__line' : v:val[0],
         \ 'action__text' : v:val[1],
         \ }")

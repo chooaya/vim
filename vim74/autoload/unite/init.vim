@@ -419,7 +419,7 @@ function! unite#init#_candidates(candidates) "{{{
         let candidate_multi.is_dummy = 1
       endif
 
-      let is_multiline = 1
+      let is_multiline = 0
       call add(candidates, candidate_multi)
 
       let cnt += 1
