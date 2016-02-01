@@ -27,6 +27,8 @@ function! s:open_replace_window(cmd)
     setlocal noswapfile bufhidden=hide buftype=acwrite
     file `='[qfreplace]'`
     autocmd BufWriteCmd <buffer> nested call s:do_replace()
+    noremap <buffer> Q :call <SID>do_find_not_same_line()<CR>
+    noremap <buffer> S :call <SID>do_find_same_line()<CR>
     setlocal filetype=qfreplace
     let s:qfreplace_bufnr = bufnr('%')
   endif
@@ -38,6 +40,92 @@ function! s:open_replace_window(cmd)
   endfor
   1 delete _
   setlocal nomodified
+endfunction
+
+function! s:do_find_same_line()
+  let qf = s:get_effectual_lines(b:qfreplace_orig_qflist)
+  if line('$') != len(qf)
+    let tp = 'qfreplace: Illegal edit: line number was changed from %d to %d.'
+    call s:echoerr(printf(tp, len(qf), line('$')))
+    return
+  endif
+
+  setlocal nomodified
+  let bufnr = bufnr('%')
+  let new_text_lines = getline(1, '$')
+  let i = 0
+  let prev_bufnr = -1
+  for e in qf
+    let new_text = new_text_lines[i]
+    let i += 1
+    if prev_bufnr != e.bufnr
+      if prev_bufnr != -1
+      endif
+      execute e.bufnr 'buffer'
+    endif
+    if getline(e.lnum) !=# s:chomp(e.text)
+        let old__text = substitute(getline(e.lnum), '^\s*\(.\{-}\)\s*$', '\1', '')
+        let e__text = substitute(s:chomp(e.text), '^\s*\(.\{-}\)\s*$', '\1', '')
+        if old__text !=# e__text
+        else
+            call s:echoerr(printf(
+                        \  'qfreplace: Original text is same: %s:%d',
+                        \   bufname(e.bufnr), e.lnum))
+            call s:echoerr(old__text)
+        endif
+    else
+        "
+    endif
+    let prev_bufnr = e.bufnr
+  endfor
+  execute bufnr 'buffer'
+  call setqflist(b:qfreplace_orig_qflist, 'r')
+endfunction
+
+function! s:do_find_not_same_line()
+  let qf = s:get_effectual_lines(b:qfreplace_orig_qflist)
+  if line('$') != len(qf)
+    let tp = 'qfreplace: Illegal edit: line number was changed from %d to %d.'
+    call s:echoerr(printf(tp, len(qf), line('$')))
+    return
+  endif
+
+  setlocal nomodified
+  let bufnr = bufnr('%')
+  let new_text_lines = getline(1, '$')
+  let i = 0
+  let prev_bufnr = -1
+  for e in qf
+    let new_text = new_text_lines[i]
+    let i += 1
+    if prev_bufnr != e.bufnr
+      if prev_bufnr != -1
+      endif
+      execute e.bufnr 'buffer'
+    endif
+    if getline(e.lnum) !=# s:chomp(e.text)
+        let old__text = substitute(getline(e.lnum), '^\s*\(.\{-}\)\s*$', '\1', '')
+        let e__text = substitute(s:chomp(e.text), '^\s*\(.\{-}\)\s*$', '\1', '')
+        if old__text !=# e__text
+            call s:echoerr(printf(
+                        \  'qfreplace: Original text has changed: %s:%d',
+                        \   bufname(e.bufnr), e.lnum))
+            call s:echoerr('----------Original text------------')
+            call s:echoerr(old__text)
+            call s:echoerr('----------Original text------------')
+            call s:echoerr('----------Current text(before edit)------------')
+            call s:echoerr(e__text)
+            call s:echoerr('----------Current text(before edit)------------')
+        else
+            "
+        endif
+    else
+        "
+    endif
+    let prev_bufnr = e.bufnr
+  endfor
+  execute bufnr 'buffer'
+  call setqflist(b:qfreplace_orig_qflist, 'r')
 endfunction
 
 function! s:do_replace()
