@@ -579,3 +579,6 @@ nmap Q :cgetb\|Qfreplace<CR>
 vnoremap q :cgetb\|Qfreplace<CR> 
 "Vim: quickfix用key mappings   nnoremap q :Qfreplace<CR>
 "
+nnoremap <silent> ,D  :<C-u>g//d<CR>
+nnoremap <silent> ,d  :<C-u>g!//d<CR>
+nnoremap <silent> ,y  :<C-u>let @y = ''\|g//yank Y<CR>
