@@ -5,10 +5,13 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:VT = g:quickrun#V.import('Vim.ViewTracer')
+
 let s:outputter = quickrun#outputter#buffered#new()
 let s:outputter.config = {
 \   'errorformat': '',
-\   'open_cmd': 'cwindow',
+\   'open_cmd': 'copen',
+\   'into': 0,
 \ }
 
 let s:outputter.init_buffered = s:outputter.init
@@ -19,6 +22,7 @@ function! s:outputter.init(session) abort
 \    = !empty(self.config.errorformat) ? self.config.errorformat
 \    : !empty(&l:errorformat)          ? &l:errorformat
 \    : &g:errorformat
+  let self._target_window = s:VT.trace_window()
 endfunction
 
 
@@ -26,18 +30,33 @@ function! s:outputter.finish(session) abort
   try
     let errorformat = &g:errorformat
     let &g:errorformat = self.config.errorformat
-    cgetexpr self._result
+    let current_window = s:VT.trace_window()
+    call s:VT.jump(self._target_window)
+    let result_list = self._apply_result(self._result)
     execute self.config.open_cmd
-    for winnr in range(1, winnr('$'))
-      if getwinvar(winnr, '&buftype') ==# 'quickfix'
-        call setwinvar(winnr, 'quickfix_title', 'quickrun: ' .
-        \   join(a:session.commands, ' && '))
-        break
-      endif
-    endfor
+    if &buftype ==# 'quickfix'
+      let w:quickfix_title = 'quickrun: ' .  join(a:session.commands, ' && ')
+    endif
+    let result_empty = len(result_list) == 0
+    if result_empty
+      call self._close_window()
+    endif
+    call s:VT.jump(self._target_window)
+    if !self.config.into
+      call s:VT.jump(current_window)
+    endif
   finally
     let &g:errorformat = errorformat
   endtry
+endfunction
+
+function! s:outputter._apply_result(expr) abort
+  cgetexpr a:expr
+  return getqflist()
+endfunction
+
+function! s:outputter._close_window() abort
+  cclose
 endfunction
 
 

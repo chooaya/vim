@@ -187,8 +187,9 @@ let g:quickrun#default_config = {
 \   'hook/sweep/files': ['%S:p:r'],
 \ },
 \ 'dosbatch': {
-\   'command': '',
-\   'exec': 'call %s %a',
+\   'command': 'cmd',
+\   'exec': '%c /c "call %s %a"',
+\   'hook/output_encode/encoding': 'cp932',
 \   'tempfile': '%{tempname()}.bat',
 \ },
 \ 'dart': {
@@ -355,6 +356,11 @@ let g:quickrun#default_config = {
 \   'exec': '%C %s',
 \   'runner': 'vimscript',
 \ },
+\ 'lua/redis': {
+\   'command': 'redis-cli',
+\   'exec': '%c --eval %s %a',
+\   'tempfile': '%{tempname()}.lua'
+\ },
 \ 'markdown': {
 \   'type': executable('Markdown.pl') ? 'markdown/Markdown.pl':
 \           executable('kramdown') ? 'markdown/kramdown':
@@ -405,6 +411,10 @@ let g:quickrun#default_config = {
 \   'cmdopt': '-ExecutionPolicy RemoteSigned',
 \   'tempfile': '%{tempname()}.ps1',
 \   'hook/output_encode/encoding': '&termencoding',
+\ },
+\ 'xquery': {
+\   'command': 'zorba',
+\   'exec': '%c %o %s %a',
 \ },
 \ 'r': {
 \   'command': 'R',
@@ -469,7 +479,8 @@ let g:quickrun#default_config = {
 \ 'sh': {},
 \ 'sql': {
 \   'type': executable('psql') ? 'sql/postgres' :
-\           executable('mysql') ? 'sql/mysql' : '',
+\           executable('mysql') ? 'sql/mysql' :
+\           executable('sqlite3') ? 'sql/sqlite3' : '',
 \ },
 \ 'sql/postgres': {
 \   'command': 'psql',
@@ -479,12 +490,20 @@ let g:quickrun#default_config = {
 \   'command': 'mysql',
 \   'exec': ['%c %o < %s'],
 \ },
+\ 'sql/sqlite3': {
+\   'command': 'sqlite3',
+\   'exec': ['%c %o < %s'],
+\ },
 \ 'swift': {
 \   'type' : executable('xcrun') ? 'swift/apple' : '',
 \ },
 \ 'swift/apple': {
 \   'command': 'xcrun',
 \   'exec': ['%c swift %s'],
+\ },
+\ 'tmux': {
+\   'command': 'tmux',
+\   'exec': ['%c source-file %s:p'],
 \ },
 \ 'typescript': {
 \   'command': 'tsc',
