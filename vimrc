@@ -582,3 +582,4 @@ vnoremap q :cgetb\|Qfreplace<CR>
 nnoremap <silent> ,D  :<C-u>g//d<CR>
 nnoremap <silent> ,d  :<C-u>g!//d<CR>
 nnoremap <silent> ,y  :<C-u>let @y = ''\|g//yank Y<CR>
+let g:ctrlp_max_height = &lines
