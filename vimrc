@@ -435,6 +435,23 @@ command! JsonFormat :execute '%!python -m json.tool'
   \ | :set ft=javascript
   \ | :1
 
+function! JsonFormatS() range
+    let tmp = @@
+	silent normal gvy
+	let selected = @@
+	let @@ = tmp
+python << EOF
+import vim,json
+import re
+l = vim.bindeval('l:')
+l['selected'] = json.dumps(json.loads(l['selected'].decode('utf-8')),indent=4,ensure_ascii=False)
+EOF
+    set paste
+    exe "norm! gvc".selected
+    set nopaste
+endfunction
+
+command! -range JsonFormatS :call JsonFormatS()
 
 if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
