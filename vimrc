@@ -430,28 +430,46 @@ autocmd BufRead *.txt\|*.TXT nnoremap <CR> <C-w>gF
 "nnoremap <CR> gF
 "nnoremap <C-w><CR> <C-w>gF
 " JSONの整形コマンドPYTHON2.6使用
-command! JsonFormat :execute '%!python -m json.tool'
-  \ | :execute '%!python -c "import re,sys;chr=__builtins__.__dict__.get(\"unichr\", chr);sys.stdout.write(re.sub(r\"\\\\u[0-9a-f]{4}\", lambda x: chr(int(\"0x\" + x.group(0)[2:], 16)).encode(\"utf-8\"), sys.stdin.read()))"'
-  \ | :set ft=javascript
-  \ | :1
+"command! JsonFormat :execute '%!python -m json.tool'
+"  \ | :execute '%!python -c "import re,sys;chr=__builtins__.__dict__.get(\"unichr\", chr);sys.stdout.write(re.sub(r\"\\\\u[0-9a-f]{4}\", lambda x: chr(int(\"0x\" + x.group(0)[2:], 16)).encode(\"utf-8\"), sys.stdin.read()))"'
+"  \ | :set ft=javascript
+"  \ | :1
+"
 
-function! JsonFormatS() range
-    let tmp = @@
-	silent normal gvy
-	let selected = @@
-	let @@ = tmp
+function! JsonFormatS(range_given, line1, line2)
+    if a:range_given
+        let tmp = @@
+        silent normal gvy
+        let selected = @@
+        let @@ = tmp
+    else
+        let tmp = @@
+        silent normal ggyG
+        let selected = @@
+        let @@ = tmp
+    endif
 python << EOF
 import vim,json
 import re
 l = vim.bindeval('l:')
 l['selected'] = json.dumps(json.loads(l['selected'].decode('utf-8')),indent=4,ensure_ascii=False)
 EOF
-    set paste
-    exe "norm! gvc".selected
-    set nopaste
+    if a:range_given
+        set paste
+        exe "norm! gvc".selected
+        set nopaste
+    else
+        %d "
+        let @z = @_
+        let @z = selected
+        silent normal gg
+        put z
+    endif
 endfunction
 
-command! -range JsonFormatS :call JsonFormatS()
+command! -range=0 JsonFormatS :call JsonFormatS(<count>, <line1>, <line2>)
+
+
 
 if !exists('g:neocomplcache_force_omni_patterns')
 	  let g:neocomplcache_force_omni_patterns = {}
