@@ -436,39 +436,71 @@ autocmd BufRead *.txt\|*.TXT nnoremap <CR> <C-w>gF
 "  \ | :1
 "
 
+"function! JsonFormatS(range_given, line1, line2)
+"    if a:range_given
+"        let tmp = @@
+"        silent normal gvy
+"        let selected = @@
+"        let @@ = tmp
+"    else
+"        let tmp = @@
+"        silent normal ggyG
+"        let selected = @@
+"        let @@ = tmp
+"    endif
+"python << EOF
+"import vim,json
+"import re
+"l = vim.bindeval('l:')
+"l['selected'] = json.dumps(json.loads(l['selected'].decode('utf-8')),indent=4,ensure_ascii=False)
+"EOF
+"    if a:range_given
+"        set paste
+"        exe "norm! gvc".selected
+"        set nopaste
+"    else
+"        %d "
+"        let @z = @_
+"        let @z = selected
+"        silent normal gg
+"        put z
+"    endif
+"endfunction
+"
+"command! -range=0 JsonFormatS :call JsonFormatS(<count>, <line1>, <line2>)
+
 function! JsonFormatS(range_given, line1, line2)
     if a:range_given
         let tmp = @@
         silent normal gvy
         let selected = @@
         let @@ = tmp
+        let usrcmd = 'php  '.$VIMRUNTIME.'/tools/stdin.php'
+        let stdin = selected. "\n"
+        let r=system(usrcmd,stdin)
     else
         let tmp = @@
         silent normal ggyG
         let selected = @@
         let @@ = tmp
+        let usrcmd = 'php  '.$VIMRUNTIME.'/tools/stdin.php'
+        let stdin = join(getline(1,'$'), "\n")
+        let r=system(usrcmd,stdin)
     endif
-python << EOF
-import vim,json
-import re
-l = vim.bindeval('l:')
-l['selected'] = json.dumps(json.loads(l['selected'].decode('utf-8')),indent=4,ensure_ascii=False)
-EOF
     if a:range_given
         set paste
-        exe "norm! gvc".selected
+        exe "norm! gvc".r
         set nopaste
     else
         %d "
         let @z = @_
-        let @z = selected
+        let @z = r
         silent normal gg
         put z
     endif
 endfunction
 
 command! -range=0 JsonFormatS :call JsonFormatS(<count>, <line1>, <line2>)
-
 
 
 if !exists('g:neocomplcache_force_omni_patterns')
