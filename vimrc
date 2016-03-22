@@ -465,6 +465,7 @@ function! UserIdFunc(range_given, line1, line2,prog)
 endfunction
 
 command! -range=0 PostFormFormat :call UserIdFunc(<count>, <line1>, <line2>,'PostFormFormat')
+command! -range=0 PostToJson :call UserIdFunc(<count>, <line1>, <line2>,'PostToJson')
 command! -range=0 JsonFormat :call UserIdFunc(<count>, <line1>, <line2>,'JsonFormat')
 
 if !exists('g:neocomplcache_force_omni_patterns')
