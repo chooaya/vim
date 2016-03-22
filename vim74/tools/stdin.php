@@ -1,62 +1,24 @@
 <?php
+if (!isset($argv[1]))
+{
+    return;
+}
+$load_file = dirname($argv[0]).'/phptools/'.$argv[1].'.php';
+if (!file_exists($load_file))
+{
+    return;
+}
 $all_line = ""; 
 while (false !== ($line = fgets(STDIN))) {
     $all_line = $all_line . $line;
 }
-function prettyPrint( $json )
-{
-    $result = '';
-    $level = 0;
-    $in_quotes = false;
-    $in_escape = false;
-    $ends_line_level = NULL;
-    $json_length = strlen( $json );
-
-    for( $i = 0; $i < $json_length; $i++ ) {
-        $char = $json[$i];
-        $new_line_level = NULL;
-        $post = "";
-        if( $ends_line_level !== NULL ) {
-            $new_line_level = $ends_line_level;
-            $ends_line_level = NULL;
-        }
-        if ( $in_escape ) {
-            $in_escape = false;
-        } else if( $char === '"' ) {
-            $in_quotes = !$in_quotes;
-        } else if( ! $in_quotes ) {
-            switch( $char ) {
-                case '}': case ']':
-                    $level--;
-                    $ends_line_level = NULL;
-                    $new_line_level = $level;
-                    break;
-
-                case '{': case '[':
-                    $level++;
-                case ',':
-                    $ends_line_level = $level;
-                    break;
-
-                case ':':
-                    $post = " ";
-                    break;
-
-                case " ": case "\t": case "\n": case "\r":
-                    $char = "";
-                    $ends_line_level = $new_line_level;
-                    $new_line_level = NULL;
-                    break;
-            }
-        } else if ( $char === '\\' ) {
-            $in_escape = true;
-        }
-        if( $new_line_level !== NULL ) {
-            $result .= "\n".str_repeat( "\t", $new_line_level );
-        }
-        $result .= $char.$post;
-    }
-
-    return $result;
+require_once($load_file);
+try {
+    $controller_ReflectionClass = new ReflectionClass($argv[1]);
+    $o = $controller_ReflectionClass->newInstance();
+    $reflection = new ReflectionObject($o);
+    $m = $reflection->getMethod("main");
+    echo $m->invokeArgs($o, array($all_line));
+} catch (Exception $e) {
+    return;
 }
-echo prettyPrint(preg_replace_callback( '/\\\\u([0-9a-zA-Z]{4})/', function ($matches) { return mb_convert_encoding(pack('H*',$matches[1]),'UTF-8','UTF-16'); }, json_encode(json_decode($all_line))));
