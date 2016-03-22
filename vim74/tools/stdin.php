@@ -1,12 +1,12 @@
 <?php
 if (!isset($argv[1]))
 {
-    return;
+    exit(1);
 }
 $load_file = dirname($argv[0]).'/phptools/'.$argv[1].'.php';
 if (!file_exists($load_file))
 {
-    return;
+    exit(1);
 }
 $all_line = ""; 
 while (false !== ($line = fgets(STDIN))) {
@@ -20,5 +20,6 @@ try {
     $m = $reflection->getMethod("main");
     echo $m->invokeArgs($o, array($all_line));
 } catch (Exception $e) {
-    return;
+    exit(1);
 }
+exit(0);

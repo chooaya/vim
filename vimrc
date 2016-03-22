@@ -448,18 +448,23 @@ function! UserIdFunc(range_given, line1, line2,prog)
         let stdin = join(getline(1,'$'), "\n")
         let r=system(usrcmd,stdin)
     endif
-    if a:range_given
-        set paste
-        exe "norm! gvc".r
-        set nopaste
+    if !v:shell_error
+        if a:range_given
+            set paste
+            exe "norm! gvc".r
+            set nopaste
+        else
+            %d "
+            let @z = @_
+            let @z = r
+            0put z
+        endif
     else
-        %d "
-        let @z = @_
-        let @z = r
-        0put z
+        echo "PHP script interrupted by error!!"
     endif
 endfunction
 
+command! -range=0 PostFormFormat :call UserIdFunc(<count>, <line1>, <line2>,'PostFormFormat')
 command! -range=0 JsonFormat :call UserIdFunc(<count>, <line1>, <line2>,'JsonFormat')
 
 if !exists('g:neocomplcache_force_omni_patterns')
