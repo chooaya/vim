@@ -3,7 +3,20 @@ class JsonFormat
 {
     public function main($input = null)
     {
-        return $this->prettyPrint(preg_replace_callback( '/\\\\u([0-9a-zA-Z]{4})/', function ($matches) { return mb_convert_encoding(pack('H*',$matches[1]),'UTF-8','UTF-16'); }, json_encode(json_decode($input))));
+        $json = json_decode($input);
+		$code = json_last_error();
+		if ($code === JSON_ERROR_NONE) {
+            $encoded_json = str_replace('\\/', '/', json_encode($json));
+            $formatted_json = preg_replace_callback( '/\\\\u([0-9a-zA-Z]{4})/', 
+                function ($matches) 
+                {
+                    return mb_convert_encoding(pack('H*',$matches[1]),'UTF-8','UTF-16');
+                }
+            , $encoded_json);
+            return $this->prettyPrint($formatted_json);
+        } else {
+			throw new Exception('check error!!');
+        }
     }
 
 
