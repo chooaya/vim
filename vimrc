@@ -591,6 +591,7 @@ let g:vdebug_options = {
 
 function! UserPythonFunc(range_given, line1, line2,prog,debug_mode)
     let l:pydbgppath = $VIMRUNTIME.'/tools/pydbgp/bin'
+    let l:pythontoolspath = $VIMRUNTIME.'/tools/pythontools'
     let l:viminfile = $VIMRUNTIME.'/tools/vimin.py'
     let l:stdin = ''
     if a:range_given
