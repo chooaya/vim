@@ -587,7 +587,7 @@ let g:vdebug_options = {
 \}
 
 "python -S ./pydbgp.py  -d localhost:9002 ~/test.py
-
+"http://www.raditha.com/blog/archives/vim-and-python-debug/
 
 function! Func() range
 	let tmp = @@
