@@ -589,6 +589,60 @@ let g:vdebug_options = {
 "python -S ./pydbgp.py  -d localhost:9002 ~/test.py
 "http://www.raditha.com/blog/archives/vim-and-python-debug/
 
+function! UserPythonFunc(range_given, line1, line2,prog,debug_mode)
+    let l:pydbgppath = $VIMRUNTIME.'/tools/pydbgp/bin'
+    let l:viminfile = $VIMRUNTIME.'/tools/vimin.py'
+    let l:stdin = ''
+    if a:range_given
+        let tmp = @@
+        silent normal gvy
+        let selected = @@
+        let @@ = tmp
+        let l:stdin = selected
+    else
+        let tmp = @@
+        silent normal ggyG
+        let selected = @@
+        let @@ = tmp
+        let stdin = selected
+    endif
+    if a:debug_mode == ''
+        execute 'pyfile' l:viminfile
+    else
+        python <<EOF
+import vim
+l = vim.bindeval('l:')
+g = vim.bindeval('g:')
+import sys
+sys.path.append(l['pydbgppath'])
+import pydbgp
+virargv = ['', '-d',str(g['vdebug_options']['port']),l['viminfile']]
+try:
+    ret = pydbgp.main(virargv)
+except:
+    pass
+
+EOF
+    endif
+
+    if a:range_given
+        set paste
+        exe "norm! gvc".l:stdin
+        set nopaste
+    else
+        %d "
+        let @z = @_
+        let @z = l:stdin
+        0put z
+    endif
+
+endfunction
+
+
+command! -range=0 -bang JsonFormatP :call UserPythonFunc(<count>, <line1>, <line2>,'JsonFormat','<bang>')
+
+
+
 function! Func() range
 	let tmp = @@
 	silent normal gvy
