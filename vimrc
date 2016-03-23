@@ -98,6 +98,7 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+set completeopt=menuone
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -585,7 +586,7 @@ let g:vdebug_options = {
 \    "continuous_mode"  : 0
 \}
 
-
+"python -S ./pydbgp.py  -d localhost:9002 ~/test.py
 
 
 function! Func() range
