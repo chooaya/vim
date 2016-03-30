@@ -7,4 +7,4 @@ a = vim.bindeval('a:')
 sys.path.append(l['pythontoolspath'])
 i = importlib.import_module(a['prog'])
 ret = i.main(l['stdin'])
-l['ret'] = ret
+l['stdin'] = ret

@@ -1,1 +1,1 @@
-git remote set-url origin <新しいリポジトリURL>
+git remote set-url origin https://github.com@chooaya/vim.git

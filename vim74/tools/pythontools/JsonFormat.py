@@ -1,2 +1,3 @@
+import sys,json 
 def main(argv):
-    return 0
+    return json.dumps(json.loads(argv),indent=4,ensure_ascii=False)
