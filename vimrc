@@ -641,6 +641,8 @@ endfunction
 
 
 command! -range=0 -bang JsonFormatP :call UserPythonFunc(<count>, <line1>, <line2>,'JsonFormat','<bang>')
+command! -range=0 -bang PostFormFormatP :call UserPythonFunc(<count>, <line1>, <line2>,'PostFormFormat','<bang>')
+command! -range=0 -bang PostToJsonP :call UserPythonFunc(<count>, <line1>, <line2>,'PostToJson','<bang>')
 
 
 
