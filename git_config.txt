@@ -1,1 +1,1 @@
-git remote set-url origin https://github.com@chooaya/vim.git
+git remote set-url origin https://chooaya@github.com/vim.git
