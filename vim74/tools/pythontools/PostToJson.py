@@ -1,5 +1,4 @@
 import sys,json 
-import urlparse
+import cgi
 def main(argv):
-    parsed = urlparse.urlparse("http://test/?"+argv)
-    return json.dumps(urlparse.parse_qs(parsed.query),indent=4,ensure_ascii=False)
+    return json.dumps(cgi.parse_qs(argv),indent=4,ensure_ascii=False)
