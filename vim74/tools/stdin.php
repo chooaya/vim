@@ -1,4 +1,6 @@
 <?php
+ini_set( "display_errors", "Off");
+error_reporting(E_ALL);
 if (!isset($argv[1]))
 {
     exit(1);

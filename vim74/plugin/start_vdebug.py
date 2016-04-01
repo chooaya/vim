@@ -81,6 +81,7 @@ class DebuggerInterface:
 
 
     def handle_return_keypress(self):
+        vdebug.log.Log("handle_return_keypress",vdebug.log.Logger.ERROR)
         """React to a <enter> keypress event.
         """
         try:
@@ -89,6 +90,7 @@ class DebuggerInterface:
             self.handle_exception(e)
 
     def handle_double_click(self):
+        vdebug.log.Log("handle_double_click",vdebug.log.Logger.ERROR)
         """React to a mouse double click event.
         """
         try:

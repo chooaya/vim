@@ -162,6 +162,12 @@ class Ui(vdebug.ui.interface.Ui):
                 '" | echohl None')
         vdebug.log.Log(string,vdebug.log.Logger.ERROR)
 
+    def info(self,string):
+        vim.command('echohl Info | echo "'+\
+                str(string).replace('"','\\"')+\
+                '" | echohl None')
+        vdebug.log.Log(string,vdebug.log.Logger.INFO)
+
     def close(self):
         if not self.is_open:
             return
