@@ -3,6 +3,7 @@ class JsonFormat
 {
     public function main($input = null)
     {
+		$input = preg_replace("/,[\s\t\n]*\]/", ']',preg_replace("/,[\s\t\n]*}/", '}',$input));
         $json = json_decode($input);
 		$code = json_last_error();
 		if ($code === JSON_ERROR_NONE) {
