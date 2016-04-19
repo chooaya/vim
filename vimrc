@@ -575,9 +575,9 @@ let g:vdebug_options = {
 \    "on_close" : 'stop',
 \    "break_on_open" : 1,
 \    "ide_key" : '',
-\    "debug_window_level" : 2,
-\    "debug_file_level" : 2,
-\    "debug_file" : "/tmp/vimlog",
+\    "debug_window_level" : 0,
+\    "debug_file_level" : 0,
+\    "debug_file" : "",
 \    "path_maps" : {},
 \    "watch_window_style" : 'expanded',
 \    "marker_default" : '⬦',
@@ -674,3 +674,4 @@ nnoremap <silent> ,d  :<C-u>g!//d<CR>
 nnoremap <silent> ,y  :<C-u>let @y = ''\|g//yank Y<CR>
 let g:ctrlp_max_height = &lines
 "http://phpy.readthedocs.org/en/latest/introduction.html
+"ps aux|awk -v ORS=" " 'NR>1{print $2}'
