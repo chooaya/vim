@@ -1,0 +1,65 @@
+#最初の行を表示する
+awk 'NR==1'
+
+#特定の N 行を表示する
+awk 'NR==N'
+
+#最後の行を表示する
+awk 'END{print}'
+
+#空行を削除する
+awk 'NF'
+awk '$0'
+awk '/./'
+
+#文字数をカウントする（wc -c）
+awk '{n+=length($0)} END{print n}'
+
+#単語数をカウントする（wc -w）
+awk '{n+=NF} END{print n}'
+
+#行数をカウントする（wc -l）
+awk 'END{print NR}'
+
+#行末の空白やタブを削除する
+awk '{sub(/[ \t]+$/, "")}1'
+
+#Unix の改行コードに変換する
+awk 'sub(/\r$/,"")'
+
+#Windows の改行コードに変換する
+awk 'sub(/$/,"\r")'
+
+#逆順出力をする（tac）
+awk '{a[i++]=$0} END{for(j=i-1; j>=0;) print a[j--]}'
+
+#重複するレコードを削除する（uniq）
+awk '!a[$0]++'
+
+#行番号を付ける（nl）
+awk '$0 = NR OFS $0'
+
+#標準出力にそのまま出力する（cat -）
+awk '1'
+
+#正規表現にマッチした行を表示する（grep）
+awk '/hogehoge/'
+
+#正規表現にマッチしない行を表示する（grep -v）
+awk '! /hogehoge/'
+
+#コメント行を削除する
+awk '! /^#/'
+
+#指定行から指定行までを表示する
+awk 'NR==10,NR==20'
+
+#偶数行を表示する
+awk 'NR%2==0'
+
+#奇数行を表示する
+awk 'NR%2'
+
+#特定のフィールドのみを抜き出す
+cat file | awk 'NF>=2 && NF<=3'
+
