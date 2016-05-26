@@ -128,6 +128,18 @@ let GtagsCscope_Auto_Load = 1
 let GtagsCscope_Keep_Alive = 1
 let GtagsCscope_Absolute_Path = 1
 let g:php_refactor_command='php ' . expand('$VIMRUNTIME/tools/refactor.phar')
+let g:php_cs_fixer_path= expand('$VIMRUNTIME/tools/php-cs-fixer.phar')
+let g:php_cs_fixer_level = "psr2"
+let g:php_cs_fixer_config = "default"
+let g:php_cs_fixer_php_path = "php"
+let g:php_cs_fixer_fixers_list = "linefeed,short_tag,indentation"
+let g:php_cs_fixer_dry_run = 0
+let g:php_cs_fixer_verbose = 0
+let g:php_cs_fixer_use_flg = 1
+let g:php_cs_standard = g:php_cs_fixer_level
+let g:php_cs_use_flg = 0
+"let g:php_cs_fixer_config_file = '.php_cs'
+"
 autocmd FileType php noremap <buffer> <space>r :call PhpRefactorShowMenu()<CR>
 "autocmd BufEnter * if &filetype == "" | setlocal ft=php |call append(0,"<?php")|call append(1,"include_once(getenv('VIM').'/vim74/tools/test_cake.php');")|call append(2,"")|call append(3,"")|call append(4,"?>")|call cursor(4,0) | endif
 autocmd BufEnter * if &filetype == "" | setlocal ft=php| endif
@@ -186,9 +198,6 @@ let g:phpcomplete_parse_docblock_comments = 1
 let g:phpcomplete_cache_taglists = 1
 let g:phpcomplete_enhance_jump_to_definition = 1
 let g:phpcomplete_mappings = {'jump_to_def': '<space><CR>'}
-if executable("hhvm")
-	autocmd FileType php set completefunc=hackcomplete#Complete
-endif
 "autocmd FileType php set omnifunc=gtagsomnicomplete#Complete 
 autocmd FileType int-phpsh set filetype=php
 if has("lua")
@@ -675,3 +684,128 @@ nnoremap <silent> ,y  :<C-u>let @y = ''\|g//yank Y<CR>
 let g:ctrlp_max_height = &lines
 "http://phpy.readthedocs.org/en/latest/introduction.html
 "ps aux|awk -v ORS=" " 'NR>1{print $2}'
+
+
+
+
+augroup PHP
+    autocmd!
+    " 書き込みのプレ処理
+    autocmd! BufWritePre *.php call PHPPre()
+    " 書き込みのポスト処理
+    autocmd! BufWritePost *.php call PHPPost()
+
+    " 書き込みのプレ処理
+    function! PHPPre()
+    endfunction
+
+    " 書き込みのポスト処理
+    " PHPLint
+    " コードの整形
+    function! PHPPost()
+        " php -lの実行結果を変数に代入
+        let l:php_lint_result = system('php -l '.bufname('%'))
+        " No syntax errorsの文字列がmatchするかチェック
+        let l:php_lint_err_check = matchstr(l:php_lint_result, 'No syntax errors')
+
+        " エラーがあるときだけLintの結果を出力する
+        if len(l:php_lint_err_check) == 0
+            " 半角スペースごとに配列を分割
+            let l:error_message_list = split(l:php_lint_result, ' ')
+            let l:line_flg = 0
+            let l:line_number = 0
+
+            " エラーメッセージからエラーの行数を拾う
+            " エラーメッセージのlineの後がエラーの行数みたい
+            for word in l:error_message_list
+                if l:line_flg == 1
+                    let l:line_number = word
+                    :break
+                else
+                    if word == 'line'
+                        let l:line_flg = 1
+                    endif
+                endif
+            endfor
+
+            " QuickFixのリストの末尾にエラーの内容を追加する
+            let l:qflist = []
+            call add(l:qflist, {'filename': bufname('%'), 'type': 'i', 'lnum': l:line_number, 'col': 1, 'text': l:php_lint_result})
+            call setqflist(l:qflist)
+            " QuickFixを表示
+            :copen
+        else
+            " QuickFixを閉じる
+            :cclose
+            " php_cs_fixerを利用してコードを整形
+            if g:php_cs_fixer_use_flg == 1
+                call PhpCsFixer()
+            endif
+            " phpcsでコードチェック
+            if g:php_cs_use_flg == 1
+                call PhpCs()
+            endif
+        endif
+    endfunction
+
+    " php_cs_fixerの設定
+    function! PhpCsFixer()
+        " @see https://github.com/FriendsOfPHP/PHP-CS-Fixer
+        :call PhpCsFixerFixFile()
+        syntax on
+    endfunction
+
+    " php_csの設定
+    function! PhpCs()
+        " パスが通っているか確認のため確認用のphpcsコマンドをたたく
+        let l:check_phpcs = system(g:php_cs_path.' -i 1>/dev/null 2> /dev/null && echo $?')
+
+        " phpcsのパスが通っている場合はphpcsでチェック
+        if l:check_phpcs == 0
+            set errorformat+=\"%f\"\\,%l\\,%c\\,%t%*[a-zA-Z]\\,\"%m\"\\,%*[a-zA-Z0-9_.-\\,]
+
+            " phpcsコマンドをたたく
+            let l:phpcs_result = system(g:php_cs_path.' --standard='.g:php_cs_standard.' '.bufname('%'))
+
+            " phpcsチェックerrorの場合
+            if l:phpcs_result != ''
+                let l:i = 0
+                let l:qflist = []
+                " phpcsのエラーメッセージを改行ごとにsplit
+                let l:error_message_list = split(l:phpcs_result, "\n")
+
+                for message in l:error_message_list
+                    " エラー内容を表すメッセージは | 行番号 | ERROR or Warning | 内容
+                    " のフォーマットなので、|のある行を探す
+                    let l:match_result = matchstr(message, '|')
+                    if len(l:match_result) > 0
+                        " split_message[0] 行番号
+                        " split_message[1] ERROR or Warning
+                        " split_message[2] 内容
+                        let l:split_message = split(message, '|')
+
+                        " split_message[0]には半角スペースが含まれるのでtrim
+                        if len(substitute(l:split_message[0], " ","","g")) > 0
+                            call add(l:qflist, {'filename': bufname('%'), 'text': l:split_message[1].l:split_message[2], 'lnum':substitute(l:split_message[0], " ","","g"), 'col': 1})
+                        else
+                            call add(l:qflist, {'filename': "", 'text': l:split_message[2], 'lnum':'', 'col': 1})
+                        endif
+                    endif
+                endfor
+
+                " QuickFixのリストの末尾にエラーの内容を追加する
+                call setqflist(l:qflist)
+                " QuickFix open
+                copen
+            else
+                " QuickFix close
+                cclose
+            endif
+
+        " phpcsのパスが通っていない場合はerror表示
+        else
+            echo 'Error! phpcs not found.'
+        endif
+
+    endfunction
+augroup END
