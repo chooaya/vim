@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:		JSON
 " Mantainer:		Eli Parra <eli@elzr.com> https://github.com/elzr/vim-json
-" Last Change:          2014 Aug 29
+" Last Change:          2014-05-13: merged Fix for square bracket matching by Jakar 
 "   https://github.com/jakar/vim-json/commit/20b650e22aa750c4ab6a66aa646bdd95d7cd548a#diff-e81fc111b2052e306d126bd9989f7b7c
 " Original Author:	Rogerz Zhang <rogerz.zhang at gmail.com> http://github.com/rogerz/vim-json
 " Acknowledgement:      Based off of vim-javascript maintained by Darrick Wiebe 
@@ -42,7 +42,7 @@ let s:block_regex = '\%({\)\s*\%(|\%([*@]\=\h\w*,\=\s*\)\%(,\s*[*@]\=\h\w*\)*|\)
 
 " Check if the character at lnum:col is inside a string.
 function s:IsInString(lnum, col)
-  return synIDattr(synID(a:lnum, a:col, 1), 'name') == 'jsonString'
+  return synIDattr(synID(a:lnum, a:col, 1), 'name') == "jsonString"
 endfunction
 
 " Find line above 'lnum' that isn't empty, or in a string.
@@ -141,7 +141,11 @@ function GetJSONIndent()
 
   " If the previous line ended with a block opening, add a level of indent.
   " if s:Match(lnum, s:block_regex)
-    " return indent(lnum) + &sw
+  "   if exists('*shiftwidth')
+  "     return indent(lnum) + shiftwidth()
+  "   else
+  "     return indent(lnum) + &sw
+  "   endif
   " endif
 
   " If the previous line contained an opening bracket, and we are still in it,
@@ -149,7 +153,11 @@ function GetJSONIndent()
   if line =~ '[[({]'
     let counts = s:LineHasOpeningBrackets(lnum)
     if counts[0] == '1' || counts[1] == '1' || counts[2] == '1'
-      return ind + &sw
+      if exists('*shiftwidth')
+        return ind + shiftwidth()
+      else
+        return ind + &sw
+      endif
     else
       call cursor(v:lnum, vcol)
     end
@@ -166,3 +174,4 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 " vim:set sw=2 sts=2 ts=8 noet:
+
