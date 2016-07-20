@@ -142,6 +142,7 @@ let g:PyFlakeOnWrite = 1
 let g:PyFlakeCheckers = 'pep8,mccabe,pyflakes'
 let g:PyFlakeDefaultComplexity=10
 let g:pyflakes_use_quickfix = 0
+let g:syntastic_python_checkers = ['pyflakes', 'pep8']
 "let g:php_cs_fixer_config_file = '.php_cs'
 "
 autocmd FileType php noremap <buffer> <space>r :call PhpRefactorShowMenu()<CR>
