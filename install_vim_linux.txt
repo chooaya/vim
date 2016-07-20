@@ -1,3 +1,9 @@
+mkdir -p ~/src/vim/
+cd ~/src/vim/
+git clone https://github.com/vim/vim.git
+
+LDFLAGS="-Wl,-rpath,/usr/local/lib/python2.7" ./configure --prefix=/tmp/cho --enable-luainterp=dynamic --enable-perlinterp=dynamic  --enable-pythoninterp --with-python-config-dir=/usr/lib/python2.7/config --enable-rubyinterp=dynamic  --enable-cscope --enable-gui=auto --enable-gtk2-check  --enable-gnome-check  --with-features=huge --with-x --enable-multibyte --disable-selinux --enable-fail-if-missing
+
 sudo yum install python-devel
 sudo ln -s /usr/lib64/libpython2.6.so.1.0 /usr/lib64/libpython2.6.so
 ./configure --prefix=/tmp/cho --enable-luainterp=dynamic --enable-perlinterp=dynamic  --enable-pythoninterp=dynamic --enable-rubyinterp=dynamic  --enable-cscope --enable-gui=auto --enable-gtk2-check  --enable-gnome-check  --with-features=huge --with-x --enable-multibyte --disable-selinux --enable-fail-if-missing

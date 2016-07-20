@@ -138,6 +138,10 @@ let g:php_cs_fixer_verbose = 0
 let g:php_cs_fixer_use_flg = 1
 let g:php_cs_standard = g:php_cs_fixer_level
 let g:php_cs_use_flg = 0
+let g:PyFlakeOnWrite = 1
+let g:PyFlakeCheckers = 'pep8,mccabe,pyflakes'
+let g:PyFlakeDefaultComplexity=10
+let g:pyflakes_use_quickfix = 0
 "let g:php_cs_fixer_config_file = '.php_cs'
 "
 autocmd FileType php noremap <buffer> <space>r :call PhpRefactorShowMenu()<CR>
@@ -156,7 +160,7 @@ set clipboard=unnamed
 "autocmd FileType php set tags=$HOME/php.tags
 "autocmd FileType int-phpsh set tags=$HOME/php.tags
 set diffopt+=iwhite 
-filetype off
+filetype on
 "if has('vim_starting')
 "  set rtp+=$VIMRUNTIME/bundle/neobundle.vim/
 "  call neobundle#begin(expand("$VIMRUNTIME/bundle/"))
