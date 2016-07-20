@@ -143,6 +143,18 @@ let g:PyFlakeCheckers = 'pep8,mccabe,pyflakes'
 let g:PyFlakeDefaultComplexity=10
 let g:pyflakes_use_quickfix = 0
 let g:syntastic_python_checkers = ['pyflakes', 'pep8']
+let g:syntastic_mode_map = {
+            \ 'mode': 'active',
+            \ 'active_filetypes': ['php', 'coffeescript', 'sh', 'vim'],
+            \ 'passive_filetypes': ['html', 'haskell', 'python']
+            \}
+" rename用のマッピングを無効にしたため、代わりにコマンドを定義
+command! -nargs=0 JediRename :call jedi#rename()
+
+" pythonのrename用のマッピングがquickrunとかぶるため回避させる
+let g:jedi#rename_command = ""
+let g:jedi#documentation_command = "<CR>"
+
 "let g:php_cs_fixer_config_file = '.php_cs'
 "
 autocmd FileType php noremap <buffer> <space>r :call PhpRefactorShowMenu()<CR>
