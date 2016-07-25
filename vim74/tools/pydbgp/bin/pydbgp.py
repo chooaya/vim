@@ -271,6 +271,113 @@ def main(argv):
             client.runMain(args, interactive)
     return 0
 
+def mainc(argv):
+    logLevel = logging.WARN
+    configureLogging(log, logLevel)
+    _fixencoding()
+    try:
+        optlist, args = getopt.getopt(argv[1:], 'hVd:k:l:p:m:inr',
+            ['help', 'version', 'debug_port',
+             'key', 'log_level', 'preload', 'modules',
+             'interactive', 'nodebug', 'nostdin'])
+    except getopt.GetoptError, msg:
+        return 1
+
+    import locale
+    codeset = locale.getdefaultlocale()[1]
+    idekey = getenv('USER', getenv('USERNAME', ''))
+    try:
+        if codeset:
+            idekey = idekey.decode(codeset)
+        else:
+            idekey = idekey.decode()
+    except (UnicodeDecodeError, LookupError), e:
+        pass # nothing we can do if defaultlocale is wrong
+    host = '127.0.0.1'
+    port = 9000
+    preloadScript = None
+    ignoreModules = []
+    interactive = 0
+    nodebug = 0
+    redirect = 1
+    for opt, optarg in optlist:
+        if optarg:
+            try:
+                if codeset:
+                    optarg = optarg.decode(codeset)
+                else:
+                    optarg = optarg.decode()
+            except (UnicodeDecodeError, LookupError), e:
+                log.warn("unable to decode argument %s = %r"%(opt,optarg))
+                pass # nothing we can do if defaultlocale is wrong
+        if opt in ('-h', '--help'):
+            return 0
+        elif opt in ('-V', '--version'):
+            import re
+            kw = re.findall('\$(\w+):\s(.*?)\s\$', __revision__)
+            return 0
+        elif opt in ('-d', '--debug_port'):
+            if optarg.find(':') >= 0:
+                host, port = optarg.split(':')
+                port = int(port)
+            else:
+                host = '127.0.0.1'
+                port = int(optarg)
+        elif opt in ('-k', '--key'):
+            idekey = optarg
+        elif opt in ('-n', '--nodebug'):
+            nodebug = 1
+        elif opt in ('-l', '--log_level'):
+            if optarg in logging._levelNames:
+                logLevel = logging._levelNames[optarg]
+            else:
+                return 1
+        elif opt in ('-p', '--preload'):
+            preloadScript = optarg
+        elif opt in ('-m', '--modules'):
+            ignoreModules = optarg.split(',')
+        elif opt in ('-i', '--interactive'):
+            interactive = 1
+        elif opt in ('-r', '--nostdin'):
+            redirect = 0
+
+    if not port:
+        return 1
+    
+    if interactive:
+        if not args:
+            args = ['interactive']
+            if sys.path[0] != '' and os.getcwd() not in sys.path:
+                sys.path.insert(0, os.getcwd())
+
+    if not args:
+        return 1
+    
+    # handle ~ paths
+    if not interactive:
+        args[0] = os.path.expanduser(args[0])
+        args[0] = os.path.realpath(args[0])
+        if not os.path.exists(args[0]):
+            return 1
+        
+    if nodebug:
+        dbgp.client.runWithoutDebug(args, interactive, host, port, idekey, logLevel)
+    else:
+        log.setLevel(logLevel)
+        dbgp.client.set_thread_support(dbgp.client.backendCmd.debug_threads)
+        client = dbgp.client.backendCmd(idekey, preloadScript, ignoreModules, module=h_main())
+        client.stdin_enabled = redirect
+        try:
+            client.connect(host, port, '__main__', args)
+        except socket.error, e:
+            return 1
+        if interactive and args[0] == 'interactive':
+            cprt = 'Type "copyright", "credits" or "license" for more information.'
+            # wait until exit
+            client.runInteractive()
+        else:
+            client.runMain(args, interactive)
+    return 0
 if __name__ == "__main__":
     sys.exit( main(sys.argv) )
 

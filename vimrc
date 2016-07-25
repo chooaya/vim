@@ -425,7 +425,7 @@ function! s:vimfiler_width_expr()
 " ,is: シェルを起動
 nnoremap <silent> ,is :VimShell<CR>
 
-map <silent> <Leader>d :<C-u>:BreakpointRemove *<CR>
+map <silent> <Leader><Leader>d :<C-u>:BreakpointRemove *<CR>
 
 " ,s: 非同期で開いたインタプリタに現在の行を評価させる
 vmap <silent> ,s :VimShellSendString<CR>
