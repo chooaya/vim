@@ -111,7 +111,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c ctermbg=darkgr
 let g:indent_guides_enable_on_vim_startup=1
 let g:indent_guides_guide_size=1
 let g:indent_guides_color_change_percent = 30
-let g:indent_guides_exclude_filetypes = ['help', 'nerdtree','vim','vimfiler','taglist','unite','php','java','json']
+let g:indent_guides_exclude_filetypes = ['help', 'nerdtree','vim','vimfiler','taglist','unite','php','java','json','quickrun']
 set imdisable
 let g:eskk_dictionary = expand('$VIMRUNTIME/SKK_JISYO/')
 let g:eskk#directory = expand('$VIMRUNTIME/SKK_JISYO/')
