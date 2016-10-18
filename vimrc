@@ -707,7 +707,17 @@ let g:ctrlp_max_height = &lines
 "http://phpy.readthedocs.org/en/latest/introduction.html
 "ps aux|awk -v ORS=" " 'NR>1{print $2}'
 
+" please install ConqueShell (https://github.com/lrvick/Conque-Shell)
+function! DebugJs()
+  let cmd="node --debug-brk "
+  if( expand('%:e') == "coffee")
+    let cmd="coffee --nodejs --debug-brk "
+  endif
+  exec "silent ConqueTermVSplit bash -ic \"(" . cmd . @% . " &) ; sleep 1s && node-vim-inspector\""
+endfunction
 
+" launch debug on ctrl-d
+nnoremap <C-d> :call DebugJs()<CR>    
 
 
 "augroup PHP
