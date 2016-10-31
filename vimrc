@@ -98,6 +98,8 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+set list
 set completeopt=menuone
 set expandtab
 set tabstop=4
@@ -586,11 +588,13 @@ function! s:Toggle_mouse_ctrl()
 		set mouse=
 		set nonumber
 		set paste
+        set nolist
 		exe 'IndentGuidesEnable'
 	else
 		set mouse=a
 		set number
 		set nopaste
+        set list
         if &filetype != 'python'
             exe 'IndentGuidesDisable'
         endif
