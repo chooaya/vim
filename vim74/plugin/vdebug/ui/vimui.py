@@ -301,12 +301,12 @@ class Window(vdebug.ui.interface.Window):
         if return_focus:
             prev_win = vim.eval('winnr()')
         if self.buffer_empty():
-            if isinstance(msg, unicode):
-                 msg = msg.encode('utf-8')
+            #if isinstance(msg, unicode):
+            #     msg = msg.encode('utf-8')
             self.buffer[:] = msg.split('\n')
         else:
-            if isinstance(msg, unicode):
-                 msg = msg.encode('utf-8')
+            #if isinstance(msg, unicode):
+            #     msg = msg.encode('utf-8')
             self.buffer.append(msg.split('\n'))
         self.command(after)
         if return_focus:
@@ -602,7 +602,7 @@ class ContextGetResponseRenderer(ResponseRenderer):
         if isinstance(p.display_name, unicode):
             line = "%(indent)s %(marker)s %(name)s = (%(type)s)%(value)s" \
                     %{'indent':"".rjust((p.depth * 2)+indent),\
-                    'marker':self.__get_marker(p),'name':p.display_name.encode('utf-8'),\
+                    'marker':self.__get_marker(p),'name':p.display_name.encode('latin1'),\
                     'type':p.type_and_size(),'value': " " + p.value}
         else:
             line = "%(indent)s %(marker)s %(name)s = (%(type)s)%(value)s" \
