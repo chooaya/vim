@@ -300,13 +300,9 @@ class Window(vdebug.ui.interface.Window):
         if return_focus:
             prev_win = vim.eval('winnr()')
         if self.buffer_empty():
-            if isinstance(msg, unicode):
-                 msg = msg.encode('utf-8')
-            self.buffer[:] = msg.split('\n')
+            self.buffer[:] = str(msg).split('\n')
         else:
-            if isinstance(msg, unicode):
-                 msg = msg.encode('utf-8')
-            self.buffer.append(msg.split('\n'))
+            self.buffer.append(str(msg).split('\n'))
         self.command(after)
         if return_focus:
             vim.command('%swincmd W' % prev_win)
