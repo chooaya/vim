@@ -7,6 +7,15 @@ class JsonFormat
         $json = json_decode($input);
 		$code = json_last_error();
 		if ($code === JSON_ERROR_NONE) {
+            if (is_string($json))
+            {
+                $json = json_decode($json);
+                $code = json_last_error();
+                if ($code !== JSON_ERROR_NONE)
+                {
+                    throw new Exception('check error!!');
+                }
+            }
             $encoded_json = str_replace('\\/', '/', json_encode($json));
             $formatted_json = preg_replace_callback( '/\\\\u([0-9a-zA-Z]{4})/', 
                 function ($matches) 
