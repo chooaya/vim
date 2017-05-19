@@ -9,11 +9,11 @@ class JsonFormat
 		if ($code === JSON_ERROR_NONE) {
             if (is_string($json))
             {
-                $json = json_decode($json);
+                $zjson = json_decode($json);
                 $code = json_last_error();
-                if ($code !== JSON_ERROR_NONE)
+                if ($code === JSON_ERROR_NONE)
                 {
-                    throw new Exception('check error!!');
+                    $json = $zjson;
                 }
             }
             $encoded_json = str_replace('\\/', '/', json_encode($json));
@@ -25,10 +25,16 @@ class JsonFormat
             , $encoded_json);
             return $this->prettyPrint($formatted_json);
         } else {
-			throw new Exception('check error!!');
+            return $this->unicode_encode($input);
         }
     }
 
+    public function unicode_encode($str) {
+        return preg_replace_callback("/\\\\u([0-9a-zA-Z]{4})/", function($matches){
+            $char = mb_convert_encoding(pack("H*", $matches[1]), "UTF-8", "UTF-16");
+            return $char;
+        }, $str);
+    }
 
     public function prettyPrint( $json )
     {
