@@ -98,6 +98,29 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 "---------------------------------------------------------------------------以下は共通設定
+vnoremap  <Up>     <nop>
+vnoremap  <Down>   <nop>
+vnoremap  <Left>   <nop>
+vnoremap  <Right>  <nop>
+inoremap  <Up>     <nop>
+inoremap  <Down>   <nop>
+inoremap  <Left>   <nop>
+inoremap  <Right>  <nop>
+noremap   <Up>     <nop>
+noremap   <Down>   <nop>
+noremap   <Left>   <nop>
+noremap   <Right>  <nop>
+map <Up> <Nop>
+map <Down> <Nop>
+map <Left> <Nop>
+map <Right> <Nop>
+vnoremap <C-c> <Esc>
+inoremap <C-c> <Esc>
+inoremap <Esc> <nop>
+vnoremap <Esc> <nop>
+
+
+
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 set list
 " 全角スペース・行末のスペース・タブの可視化
