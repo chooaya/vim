@@ -766,7 +766,6 @@ function! DebugJs()
 endfunction
 
 " launch debug on ctrl-d
-nnoremap <C-d> :call DebugJs()<CR>    
 
 
 "augroup PHP
