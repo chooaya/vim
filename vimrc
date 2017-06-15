@@ -118,7 +118,8 @@ vnoremap <C-c> <Esc>
 inoremap <C-c> <Esc>
 inoremap <Esc> <nop>
 vnoremap <Esc> <nop>
-
+set relativenumber
+nnoremap <F3> :<C-u>setlocal relativenumber!<CR>
 
 
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
@@ -336,7 +337,6 @@ let g:netrw_altv = 1
 " 'o'でファイルを開くときは下側に開く。(デフォルトが上側なので入れ替え)
 let g:netrw_alto = 1
 
-map <F4> <Esc> :WriteBackup
 vnoremap * "zy:let @/ = @z<CR>n
 
 "Diff表示の際にウィンドウをリサイズしない
@@ -663,6 +663,19 @@ let g:vdebug_options = {
 \    "marker_closed_tree" : '▸',
 \    "marker_open_tree" : '▾',
 \    "continuous_mode"  : 0
+\}
+let g:vdebug_keymap = {
+\    "run" : "<F5>",
+\    "run_to_cursor" : "<F9>",
+\    "step_over" : "<F2>",
+\    "step_into" : "<F4>",
+\    "step_out" : "<F8>",
+\    "close" : "<F6>",
+\    "detach" : "<F7>",
+\    "set_breakpoint" : "<F10>",
+\    "get_context" : "<F11>",
+\    "eval_under_cursor" : "<F12>",
+\    "eval_visual" : "<Leader>e"
 \}
 
 "python -S ./pydbgp.py  -d localhost:9002 ~/test.py
